@@ -1,0 +1,31 @@
+<x-guest-layout>
+    <section
+        class="min-h-screen
+            bg-[var(--color-background)]
+            px-6
+            py-10
+            text-[var(--color-text)]"
+    >
+        <div
+            class="mx-auto
+                flex
+                min-h-[calc(100vh-5rem)]
+                w-full
+                max-w-6xl
+                items-center
+                justify-center"
+        >
+            <div
+                class="grid
+                    w-full
+                    max-w-5xl
+                    gap-10
+                    lg:grid-cols-[1.15fr_0.85fr]
+                    lg:items-center"
+            >
+                @include('auth.partials.login-hero')
+                @include('auth.partials.login-form')
+            </div>
+        </div>
+    </section>
+</x-guest-layout>

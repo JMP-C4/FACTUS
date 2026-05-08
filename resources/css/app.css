@@ -1,0 +1,115 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        --color-bg: #f4f1ea;
+        --color-surface: #fffdf8;
+        --color-ink: #111111;
+        --color-primary: #2563eb;
+        --color-accent: #f59e0b;
+        --color-success: #16a34a;
+        --color-danger: #dc2626;
+        --color-muted: #94a3b8;
+
+        --font-display: "Space Grotesk", "Arial Black", "Arial Bold", sans-serif;
+        --font-body: "Inter Tight", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+
+        --tracking-label: 0.28em;
+        --radius-soft: 0.125rem;
+        --border-thick: 3px;
+        --border-regular: 2px;
+
+        --shadow-brutal-blue: 8px 8px 0 0 var(--color-primary);
+        --shadow-brutal-amber: 8px 8px 0 0 var(--color-accent);
+        --shadow-brutal-black: 6px 6px 0 0 var(--color-ink);
+
+        /* Compatibility aliases for transitional Blade prototypes. */
+        --color-background: var(--color-bg);
+        --color-secondary: var(--color-ink);
+        --color-text: var(--color-ink);
+        --color-text-soft: #64748b;
+        --color-text-muted: #475569;
+        --color-border: var(--color-ink);
+        --color-surface-muted: #dbe7ff;
+    }
+
+    html {
+        font-family: var(--font-body);
+        background-color: var(--color-bg);
+        color: var(--color-ink);
+    }
+
+    body {
+        @apply min-h-screen antialiased;
+        background-color: var(--color-bg);
+        color: var(--color-ink);
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        font-family: var(--font-display);
+        @apply font-extrabold uppercase;
+    }
+}
+
+@layer components {
+    .brutal-card {
+        background-color: var(--color-surface);
+        border: var(--border-thick) solid var(--color-ink);
+        border-radius: 0;
+        box-shadow: var(--shadow-brutal-blue);
+        @apply p-6;
+    }
+
+    .brutal-button {
+        background-color: var(--color-surface);
+        color: var(--color-ink);
+        border: var(--border-thick) solid var(--color-ink);
+        box-shadow: var(--shadow-brutal-blue);
+        letter-spacing: var(--tracking-label);
+        font-family: var(--font-display);
+        @apply inline-flex items-center justify-center px-6 py-3 text-sm font-black uppercase transition-transform duration-150;
+    }
+
+    .brutal-button:hover {
+        transform: translate(-2px, -2px);
+    }
+
+    .brutal-button:focus-visible {
+        outline: none;
+        box-shadow: var(--shadow-brutal-amber);
+    }
+
+    .brutal-input {
+        background-color: #ffffff;
+        color: var(--color-ink);
+        border: var(--border-regular) solid var(--color-ink);
+        border-radius: 0;
+        @apply w-full px-4 py-3;
+    }
+
+    .brutal-input:focus {
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 1px var(--color-primary);
+        outline: none;
+    }
+
+    .brutal-label {
+        letter-spacing: var(--tracking-label);
+        font-family: var(--font-display);
+        @apply text-xs font-bold uppercase;
+    }
+
+    .brutal-badge {
+        border: var(--border-regular) solid var(--color-ink);
+        border-radius: 0;
+        letter-spacing: calc(var(--tracking-label) * 0.45);
+        @apply inline-flex items-center px-3 py-1 text-[10px] font-extrabold uppercase;
+    }
+}
