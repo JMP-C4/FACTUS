@@ -1,7 +1,7 @@
 <?php
 
-use App\Modules\Clientes\Providers\ClientesServiceProvider;
 use App\Modules\AccessControl\Providers\AccessControlServiceProvider;
+use App\Modules\Clientes\Providers\ClientesServiceProvider;
 use App\Modules\Facturacion\Providers\FacturacionServiceProvider;
 use App\Modules\Inventario\Providers\InventarioServiceProvider;
 use App\Modules\Productos\Providers\ProductosServiceProvider;

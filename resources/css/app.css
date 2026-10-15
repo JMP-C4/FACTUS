@@ -59,11 +59,27 @@
 }
 
 @layer components {
+    .brutal-shell {
+        @apply relative overflow-hidden;
+        background:
+            linear-gradient(135deg, rgba(37, 99, 235, 0.08), transparent 35%),
+            linear-gradient(225deg, rgba(245, 158, 11, 0.12), transparent 30%),
+            var(--color-bg);
+    }
+
     .brutal-card {
         background-color: var(--color-surface);
         border: var(--border-thick) solid var(--color-ink);
         border-radius: 0;
         box-shadow: var(--shadow-brutal-blue);
+        @apply p-6;
+    }
+
+    .brutal-card-accent {
+        background-color: var(--color-surface);
+        border: var(--border-thick) solid var(--color-ink);
+        border-radius: 0;
+        box-shadow: var(--shadow-brutal-amber);
         @apply p-6;
     }
 
@@ -111,5 +127,51 @@
         border-radius: 0;
         letter-spacing: calc(var(--tracking-label) * 0.45);
         @apply inline-flex items-center px-3 py-1 text-[10px] font-extrabold uppercase;
+    }
+
+    .brutal-kicker {
+        letter-spacing: var(--tracking-label);
+        font-family: var(--font-display);
+        @apply text-[11px] font-bold uppercase;
+    }
+
+    .brutal-stat {
+        background-color: var(--color-surface);
+        border: var(--border-thick) solid var(--color-ink);
+        border-radius: 0;
+        box-shadow: var(--shadow-brutal-black);
+        @apply flex min-h-40 flex-col justify-between p-5;
+    }
+
+    .brutal-nav-item {
+        border: var(--border-regular) solid transparent;
+        @apply flex items-center gap-3 px-4 py-3 text-sm font-semibold transition-all duration-150;
+    }
+
+    .brutal-nav-item:hover {
+        border-color: var(--color-ink);
+        background-color: rgba(37, 99, 235, 0.08);
+        transform: translate(-2px, -2px);
+    }
+
+    .brutal-alert {
+        border: var(--border-regular) solid var(--color-ink);
+        @apply flex items-start gap-3 px-4 py-3 text-sm font-medium;
+    }
+
+    .brutal-table {
+        @apply min-w-full border-collapse text-sm;
+    }
+
+    .brutal-table thead th {
+        background-color: var(--color-ink);
+        color: var(--color-surface);
+        letter-spacing: calc(var(--tracking-label) * 0.55);
+        @apply px-4 py-3 text-left text-[11px] font-bold uppercase;
+    }
+
+    .brutal-table tbody td {
+        border-top: var(--border-regular) solid var(--color-ink);
+        @apply px-4 py-4 align-top;
     }
 }

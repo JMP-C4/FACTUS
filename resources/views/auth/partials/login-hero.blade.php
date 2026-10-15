@@ -29,7 +29,7 @@
                 text-[var(--color-text-muted)]"
         >
             Entra a tu panel para gestionar productos, movimientos de stock y el flujo
-            de facturacion conectado con Factus.
+            de facturacion en modo local.
         </p>
 
         <div
@@ -86,7 +86,7 @@
                         leading-6
                         text-[var(--color-text-muted)]"
                 >
-                    Integracion con Factus para emitir y validar comprobantes.
+                    Emision local de comprobantes con numeracion, CUFE y QR.
                 </p>
             </div>
         </div>

@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\User;
+use App\Modules\AccessControl\Models\Role;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -12,16 +13,10 @@ use Illuminate\Support\Str;
  */
 class UserFactory extends Factory
 {
-    /**
-     * The current password being used by the factory.
-     */
+    protected $model = User::class;
+
     protected static ?string $password;
 
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
         return [
@@ -30,16 +25,53 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
+            'company_id' => null,
+            'branch_id' => null,
         ];
     }
 
-    /**
-     * Indicate that the model's email address should be unverified.
-     */
     public function unverified(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn () => [
             'email_verified_at' => null,
         ]);
+    }
+
+    public function superAdmin(): static
+    {
+        return $this->afterCreating(function (User $user): void {
+            $role = Role::firstOrCreate(
+                ['name' => 'super_admin'],
+                ['scope_type' => 'global', 'description' => 'Super Administrador']
+            );
+            $user->roles()->attach($role);
+        });
+    }
+
+    public function admin(): static
+    {
+        return $this->afterCreating(function (User $user): void {
+            $role = Role::firstOrCreate(
+                ['name' => 'admin'],
+                ['scope_type' => 'company', 'description' => 'Administrador']
+            );
+            $user->roles()->attach($role, [
+                'company_id' => $user->company_id,
+            ]);
+        });
+    }
+
+    public function cashier(): static
+    {
+        return $this->afterCreating(function (User $user): void {
+            $role = Role::firstOrCreate(
+                ['name' => 'cashier'],
+                ['scope_type' => 'branch', 'description' => 'Cajero']
+            );
+            $user->roles()->attach($role, [
+                'company_id' => $user->company_id,
+                'branch_id' => $user->branch_id,
+            ]);
+        });
     }
 }

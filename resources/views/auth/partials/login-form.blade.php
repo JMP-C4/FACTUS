@@ -333,5 +333,16 @@
                 Registrate
             </a>
         </p>
+
+        <p
+            class="mt-4
+                text-center
+                text-xs
+                leading-6
+                text-[var(--color-text-soft)]"
+        >
+            El acceso se autentica con correo y contraseña. Los roles y scopes
+            se administran después desde Access Control.
+        </p>
     </div>
 </div>
