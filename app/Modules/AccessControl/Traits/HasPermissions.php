@@ -22,6 +22,11 @@ trait HasPermissions
             return true;
         }
 
+        // Permiso asignado directamente al usuario.
+        if ($this->directPermissions()->where('permissions.name', $permissionName)->exists()) {
+            return true;
+        }
+
         // Busca en mis roles si alguno tiene el permiso
         return $this->roles()
             ->whereHas('permissions', function ($query) use ($permissionName) {
@@ -86,13 +91,17 @@ trait HasPermissions
             return Permission::all();
         }
 
-        // De lo contrario, retorna permisos de mis roles
-        return $this->roles()
+        // Permisos heredados de mis roles + los asignados directamente.
+        $rolePermissions = $this->roles()
             ->with('permissions')
             ->get()
             ->pluck('permissions')
-            ->flatten()
-            ->unique('id');
+            ->flatten();
+
+        return $rolePermissions
+            ->merge($this->directPermissions()->get())
+            ->unique('id')
+            ->values();
     }
 
     // Obtiene módulos a los que tengo acceso (para menús)

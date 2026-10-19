@@ -11,8 +11,19 @@ interface InventoryMovementGatewayContract
 
     /**
      * Registra una salida de stock.
+     *
+     * `$referenceType` / `$referenceId` permiten enlazar el movimiento con el
+     * origen de negocio (por ejemplo, una factura).
      */
-    public function exit(int $warehouseId, int $productId, int $quantity, ?string $reason = null, ?int $performedBy = null): void;
+    public function exit(
+        int $warehouseId,
+        int $productId,
+        int $quantity,
+        ?string $reason = null,
+        ?int $performedBy = null,
+        ?string $referenceType = null,
+        ?int $referenceId = null,
+    ): void;
 
     /**
      * Registra un ajuste de stock.

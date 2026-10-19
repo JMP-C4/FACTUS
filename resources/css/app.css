@@ -35,10 +35,31 @@
         --color-surface-muted: #dbe7ff;
     }
 
+    /* Tema oscuro neo-brutalista: alto contraste, mismas variables. */
+    .dark {
+        --color-bg: #0f1115;
+        --color-surface: #181b21;
+        --color-ink: #f4f1ea;
+        --color-primary: #5b8cff;
+        --color-accent: #f7b32b;
+        --color-success: #4ade80;
+        --color-danger: #f87171;
+        --color-muted: #64748b;
+
+        --shadow-brutal-blue: 8px 8px 0 0 var(--color-primary);
+        --shadow-brutal-amber: 8px 8px 0 0 var(--color-accent);
+        --shadow-brutal-black: 6px 6px 0 0 var(--color-ink);
+
+        --color-text-soft: #94a3b8;
+        --color-text-muted: #cbd5e1;
+        --color-surface-muted: #1f2b45;
+    }
+
     html {
         font-family: var(--font-body);
         background-color: var(--color-bg);
         color: var(--color-ink);
+        scroll-behavior: smooth;
     }
 
     body {
@@ -55,6 +76,38 @@
     h6 {
         font-family: var(--font-display);
         @apply font-extrabold uppercase;
+    }
+
+    /* Transiciones suaves por defecto en elementos interactivos. */
+    @media (prefers-reduced-motion: no-preference) {
+        a,
+        button,
+        input,
+        select,
+        textarea,
+        summary,
+        label,
+        [role="button"] {
+            transition:
+                color 0.18s ease,
+                background-color 0.18s ease,
+                border-color 0.18s ease,
+                box-shadow 0.18s ease,
+                transform 0.18s ease,
+                opacity 0.18s ease;
+        }
+    }
+
+    /* Respeta a quien prefiere menos movimiento. */
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.001ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.001ms !important;
+            scroll-behavior: auto !important;
+        }
     }
 }
 
@@ -103,7 +156,7 @@
     }
 
     .brutal-input {
-        background-color: #ffffff;
+        background-color: var(--color-surface);
         color: var(--color-ink);
         border: var(--border-regular) solid var(--color-ink);
         border-radius: 0;
@@ -154,6 +207,57 @@
         transform: translate(-2px, -2px);
     }
 
+    .brutal-sidebar-item {
+        color: var(--color-ink);
+        border: var(--border-regular) solid transparent;
+        letter-spacing: calc(var(--tracking-label) * 0.4);
+        font-family: var(--font-display);
+        @apply flex w-full items-center gap-3 px-3 py-3 text-xs font-black uppercase transition-all duration-150;
+    }
+
+    .brutal-sidebar-item:hover {
+        border-color: var(--color-ink);
+        background-color: rgba(37, 99, 235, 0.08);
+        transform: translate(-2px, -2px);
+    }
+
+    .brutal-sidebar-item[data-active="true"] {
+        background-color: var(--color-ink);
+        color: var(--color-surface);
+        border-color: var(--color-ink);
+        box-shadow: 4px 4px 0 0 var(--color-accent);
+        transform: none;
+    }
+
+    .brutal-sidebar-item[data-active="true"]:hover {
+        transform: translate(-2px, -2px);
+    }
+
+    .brutal-sidebar-toggle {
+        position: absolute;
+        top: 1.75rem;
+        right: -1.25rem;
+        z-index: 50;
+        height: 2.5rem;
+        width: 2.5rem;
+        align-items: center;
+        justify-content: center;
+        border: var(--border-thick) solid var(--color-ink);
+        background-color: var(--color-accent);
+        color: var(--color-ink);
+        box-shadow: var(--shadow-brutal-black);
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .brutal-sidebar-toggle:hover {
+        transform: translate(-2px, -2px);
+    }
+
+    .brutal-sidebar-toggle:focus-visible {
+        outline: none;
+        box-shadow: var(--shadow-brutal-blue);
+    }
+
     .brutal-alert {
         border: var(--border-regular) solid var(--color-ink);
         @apply flex items-start gap-3 px-4 py-3 text-sm font-medium;
@@ -161,17 +265,95 @@
 
     .brutal-table {
         @apply min-w-full border-collapse text-sm;
+        table-layout: fixed;
+        width: 100%;
     }
 
     .brutal-table thead th {
         background-color: var(--color-ink);
         color: var(--color-surface);
         letter-spacing: calc(var(--tracking-label) * 0.55);
+        overflow-wrap: anywhere;
         @apply px-4 py-3 text-left text-[11px] font-bold uppercase;
     }
 
     .brutal-table tbody td {
         border-top: var(--border-regular) solid var(--color-ink);
+        overflow-wrap: anywhere;
         @apply px-4 py-4 align-top;
+    }
+
+    .brutal-toast {
+        background-color: var(--color-surface);
+        color: var(--color-ink);
+        border: var(--border-thick) solid var(--color-ink);
+        border-radius: 0;
+        box-shadow: var(--shadow-brutal-black);
+        animation: brutal-toast-in 200ms ease-out;
+        @apply flex w-full items-start gap-3 p-4 text-sm font-semibold;
+    }
+
+    @keyframes brutal-toast-in {
+        from {
+            opacity: 0;
+            transform: translateX(1.5rem);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .brutal-dialog-panel {
+        background-color: var(--color-surface);
+        border: var(--border-thick) solid var(--color-ink);
+        border-radius: 0;
+        box-shadow: var(--shadow-brutal-amber);
+    }
+
+    .brutal-dialog-head {
+        background-color: var(--color-ink);
+        color: var(--color-surface);
+        @apply flex items-start justify-between gap-4 px-5 py-4;
+    }
+
+    /* Entrada suave del contenido de página. */
+    .brutal-page {
+        animation: brutal-page-in 0.28s ease-out both;
+    }
+
+    @keyframes brutal-page-in {
+        from {
+            opacity: 0;
+            transform: translateY(6px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+}
+
+/* Ajustes de tema oscuro para utilidades con color fijo.
+   Mantienen visibles bordes y superficies sobre fondo oscuro. */
+@layer utilities {
+    .dark .border-black {
+        border-color: var(--color-ink);
+    }
+
+    .dark .hover\:border-black:hover {
+        border-color: var(--color-ink);
+    }
+
+    .dark .text-black {
+        color: var(--color-ink);
+    }
+
+    .dark .bg-white {
+        background-color: var(--color-surface);
+    }
+
+    .dark .border-white {
+        border-color: var(--color-ink);
     }
 }

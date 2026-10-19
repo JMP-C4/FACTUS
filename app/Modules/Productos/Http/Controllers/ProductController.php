@@ -29,7 +29,7 @@ class ProductController extends Controller
             'search' => $request->input('search'),
             'category_id' => $request->input('category_id'),
             'brand_id' => $request->input('brand_id'),
-            'is_active' => $request->boolean('is_active'),
+            'is_active' => $request->has('is_active') ? $request->boolean('is_active') : null,
         ]);
 
         $categories = $this->productService->getCategories($companyId);
@@ -46,8 +46,9 @@ class ProductController extends Controller
         $companyId = $request->user()->company_id;
         $categories = $this->productService->getCategories($companyId);
         $brands = $this->productService->getBrands($companyId);
+        $taxes = $this->productService->getTaxes($companyId);
 
-        return view('productos::create', compact('categories', 'brands'));
+        return view('productos::create', compact('categories', 'brands', 'taxes'));
     }
 
     /**
@@ -55,7 +56,11 @@ class ProductController extends Controller
      */
     public function store(StoreProductRequest $request): RedirectResponse
     {
-        $companyId = $request->user()->company_id;
+        $companyId = $this->currentCompanyId($request);
+
+        if ($companyId === null) {
+            return back()->with('error', 'Debes pertenecer a una compañía para crear productos.');
+        }
 
         $this->productService->create($companyId, $request->validated());
 
@@ -71,7 +76,7 @@ class ProductController extends Controller
     {
         $this->authorizeProduct($product, $request);
 
-        $product->load(['category', 'brand']);
+        $product->load(['category', 'brand', 'tax']);
 
         return view('productos::show', compact('product'));
     }
@@ -86,8 +91,9 @@ class ProductController extends Controller
         $companyId = $request->user()->company_id;
         $categories = $this->productService->getCategories($companyId);
         $brands = $this->productService->getBrands($companyId);
+        $taxes = $this->productService->getTaxes($companyId);
 
-        return view('productos::edit', compact('product', 'categories', 'brands'));
+        return view('productos::edit', compact('product', 'categories', 'brands', 'taxes'));
     }
 
     /**
@@ -164,8 +170,10 @@ class ProductController extends Controller
      */
     private function authorizeProduct(Product $product, Request $request): void
     {
+        $companyId = $request->user()->company_id;
+
         abort_if(
-            $product->company_id !== $request->user()->company_id,
+            $companyId !== null && $product->company_id !== $companyId,
             403,
             'No tienes acceso a este producto.'
         );

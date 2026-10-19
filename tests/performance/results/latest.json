@@ -1,0 +1,881 @@
+{
+  "generatedAt": "2026-10-19T02:02:23.454Z",
+  "target": "http://127.0.0.1:8090",
+  "gitCommit": "20f52ac",
+  "node": "v24.13.0",
+  "cpuCores": 4,
+  "totalMemGB": 9.6,
+  "inflightCap": 120,
+  "requestTimeoutMs": 90000,
+  "serverWorkers": "48",
+  "mix": [
+    {
+      "name": "consulta",
+      "w": 35,
+      "expect": 200
+    },
+    {
+      "name": "busqueda",
+      "w": 15,
+      "expect": 200
+    },
+    {
+      "name": "login",
+      "w": 5,
+      "expect": 302
+    },
+    {
+      "name": "compra",
+      "w": 15,
+      "expect": 201
+    },
+    {
+      "name": "factura",
+      "w": 10,
+      "expect": 302
+    },
+    {
+      "name": "usuario",
+      "w": 5,
+      "expect": 302
+    },
+    {
+      "name": "perfil",
+      "w": 15,
+      "expect": 302
+    }
+  ],
+  "seedCounts": {
+    "users": 203,
+    "invoices": 300,
+    "invoices_issued": 300,
+    "sessions": 2000
+  },
+  "levels": [
+    {
+      "concurrency": 10,
+      "label": "baseline",
+      "warmupSec": 1.5,
+      "durationSec": 8,
+      "wallSec": 14.86,
+      "total": 62,
+      "ok": 62,
+      "err": 0,
+      "errRate": 0,
+      "rps": 7.8,
+      "okRps": 7.8,
+      "latency": {
+        "min": 657,
+        "avg": 1902,
+        "p50": 1609,
+        "p90": 3132,
+        "p95": 3837,
+        "p99": 5862,
+        "max": 5862
+      },
+      "statuses": {
+        "200": 31,
+        "201": 9,
+        "302": 22
+      },
+      "scenarios": {
+        "consulta": {
+          "count": 24,
+          "ok": 24,
+          "err": 0,
+          "errRate": 0,
+          "rps": 3,
+          "latency": {
+            "min": 1128,
+            "avg": 2100,
+            "p50": 1805,
+            "p90": 3132,
+            "p95": 5208,
+            "p99": 5862,
+            "max": 5862
+          },
+          "statuses": {
+            "200": 24
+          }
+        },
+        "busqueda": {
+          "count": 7,
+          "ok": 7,
+          "err": 0,
+          "errRate": 0,
+          "rps": 0.9,
+          "latency": {
+            "min": 1110,
+            "avg": 1367,
+            "p50": 1257,
+            "p90": 1934,
+            "p95": 1934,
+            "p99": 1934,
+            "max": 1934
+          },
+          "statuses": {
+            "200": 7
+          }
+        },
+        "login": {
+          "count": 1,
+          "ok": 1,
+          "err": 0,
+          "errRate": 0,
+          "rps": 0.1,
+          "latency": {
+            "min": 3837,
+            "avg": 3837,
+            "p50": 3837,
+            "p90": 3837,
+            "p95": 3837,
+            "p99": 3837,
+            "max": 3837
+          },
+          "statuses": {
+            "302": 1
+          }
+        },
+        "compra": {
+          "count": 9,
+          "ok": 9,
+          "err": 0,
+          "errRate": 0,
+          "rps": 1.1,
+          "latency": {
+            "min": 1001,
+            "avg": 2567,
+            "p50": 2195,
+            "p90": 5695,
+            "p95": 5695,
+            "p99": 5695,
+            "max": 5695
+          },
+          "statuses": {
+            "201": 9
+          }
+        },
+        "factura": {
+          "count": 6,
+          "ok": 6,
+          "err": 0,
+          "errRate": 0,
+          "rps": 0.8,
+          "latency": {
+            "min": 740,
+            "avg": 1683,
+            "p50": 1535,
+            "p90": 2423,
+            "p95": 2423,
+            "p99": 2423,
+            "max": 2423
+          },
+          "statuses": {
+            "302": 6
+          }
+        },
+        "usuario": {
+          "count": 5,
+          "ok": 5,
+          "err": 0,
+          "errRate": 0,
+          "rps": 0.6,
+          "latency": {
+            "min": 675,
+            "avg": 1724,
+            "p50": 1609,
+            "p90": 2512,
+            "p95": 2512,
+            "p99": 2512,
+            "max": 2512
+          },
+          "statuses": {
+            "302": 5
+          }
+        },
+        "perfil": {
+          "count": 10,
+          "ok": 10,
+          "err": 0,
+          "errRate": 0,
+          "rps": 1.3,
+          "latency": {
+            "min": 657,
+            "avg": 1227,
+            "p50": 1070,
+            "p90": 1395,
+            "p95": 2211,
+            "p99": 2211,
+            "max": 2211
+          },
+          "statuses": {
+            "302": 10
+          }
+        }
+      },
+      "cpuBusyPct": 75,
+      "loadavgBefore": "4.34 12.24 12.68",
+      "loadavgAfter": "6.86 12.41 12.73"
+    },
+    {
+      "concurrency": 100,
+      "label": "",
+      "warmupSec": 1.5,
+      "durationSec": 15,
+      "wallSec": 30.37,
+      "total": 107,
+      "ok": 107,
+      "err": 0,
+      "errRate": 0,
+      "rps": 7.1,
+      "okRps": 7.1,
+      "latency": {
+        "min": 5834,
+        "avg": 22565,
+        "p50": 23870,
+        "p90": 28689,
+        "p95": 29373,
+        "p99": 29925,
+        "max": 30367
+      },
+      "statuses": {
+        "200": 59,
+        "201": 17,
+        "302": 31
+      },
+      "scenarios": {
+        "consulta": {
+          "count": 43,
+          "ok": 43,
+          "err": 0,
+          "errRate": 0,
+          "rps": 2.9,
+          "latency": {
+            "min": 8562,
+            "avg": 23021,
+            "p50": 22313,
+            "p90": 28714,
+            "p95": 29515,
+            "p99": 30367,
+            "max": 30367
+          },
+          "statuses": {
+            "200": 43
+          }
+        },
+        "busqueda": {
+          "count": 16,
+          "ok": 16,
+          "err": 0,
+          "errRate": 0,
+          "rps": 1.1,
+          "latency": {
+            "min": 8577,
+            "avg": 22066,
+            "p50": 24184,
+            "p90": 27811,
+            "p95": 28689,
+            "p99": 28689,
+            "max": 28689
+          },
+          "statuses": {
+            "200": 16
+          }
+        },
+        "login": {
+          "count": 5,
+          "ok": 5,
+          "err": 0,
+          "errRate": 0,
+          "rps": 0.3,
+          "latency": {
+            "min": 17065,
+            "avg": 24811,
+            "p50": 24114,
+            "p90": 29736,
+            "p95": 29736,
+            "p99": 29736,
+            "max": 29736
+          },
+          "statuses": {
+            "302": 5
+          }
+        },
+        "compra": {
+          "count": 17,
+          "ok": 17,
+          "err": 0,
+          "errRate": 0,
+          "rps": 1.1,
+          "latency": {
+            "min": 5834,
+            "avg": 23058,
+            "p50": 24937,
+            "p90": 29373,
+            "p95": 29925,
+            "p99": 29925,
+            "max": 29925
+          },
+          "statuses": {
+            "201": 17
+          }
+        },
+        "factura": {
+          "count": 6,
+          "ok": 6,
+          "err": 0,
+          "errRate": 0,
+          "rps": 0.4,
+          "latency": {
+            "min": 17280,
+            "avg": 22393,
+            "p50": 21312,
+            "p90": 28229,
+            "p95": 28229,
+            "p99": 28229,
+            "max": 28229
+          },
+          "statuses": {
+            "302": 6
+          }
+        },
+        "usuario": {
+          "count": 8,
+          "ok": 8,
+          "err": 0,
+          "errRate": 0,
+          "rps": 0.5,
+          "latency": {
+            "min": 11523,
+            "avg": 21771,
+            "p50": 20521,
+            "p90": 27907,
+            "p95": 27907,
+            "p99": 27907,
+            "max": 27907
+          },
+          "statuses": {
+            "302": 8
+          }
+        },
+        "perfil": {
+          "count": 12,
+          "ok": 12,
+          "err": 0,
+          "errRate": 0,
+          "rps": 0.8,
+          "latency": {
+            "min": 8496,
+            "avg": 20579,
+            "p50": 19670,
+            "p90": 28204,
+            "p95": 28636,
+            "p99": 28636,
+            "max": 28636
+          },
+          "statuses": {
+            "302": 12
+          }
+        }
+      },
+      "cpuBusyPct": 66.8,
+      "loadavgBefore": "6.86 12.41 12.73",
+      "loadavgAfter": "15.59 14.07 13.28"
+    },
+    {
+      "concurrency": 500,
+      "label": "",
+      "warmupSec": 1.5,
+      "durationSec": 15,
+      "wallSec": 77.14,
+      "total": 605,
+      "ok": 605,
+      "err": 0,
+      "errRate": 0,
+      "rps": 40.3,
+      "okRps": 40.3,
+      "latency": {
+        "min": 3951,
+        "avg": 39634,
+        "p50": 41436,
+        "p90": 63265,
+        "p95": 64448,
+        "p99": 67870,
+        "max": 73143
+      },
+      "statuses": {
+        "200": 295,
+        "201": 103,
+        "302": 207
+      },
+      "scenarios": {
+        "consulta": {
+          "count": 210,
+          "ok": 210,
+          "err": 0,
+          "errRate": 0,
+          "rps": 14,
+          "latency": {
+            "min": 4440,
+            "avg": 39004,
+            "p50": 38946,
+            "p90": 62958,
+            "p95": 63661,
+            "p99": 64774,
+            "max": 66722
+          },
+          "statuses": {
+            "200": 210
+          }
+        },
+        "busqueda": {
+          "count": 85,
+          "ok": 85,
+          "err": 0,
+          "errRate": 0,
+          "rps": 5.7,
+          "latency": {
+            "min": 4042,
+            "avg": 36521,
+            "p50": 39651,
+            "p90": 61733,
+            "p95": 62906,
+            "p99": 68185,
+            "max": 68185
+          },
+          "statuses": {
+            "200": 85
+          }
+        },
+        "login": {
+          "count": 25,
+          "ok": 25,
+          "err": 0,
+          "errRate": 0,
+          "rps": 1.7,
+          "latency": {
+            "min": 12539,
+            "avg": 47260,
+            "p50": 46854,
+            "p90": 71213,
+            "p95": 71568,
+            "p99": 73143,
+            "max": 73143
+          },
+          "statuses": {
+            "302": 25
+          }
+        },
+        "compra": {
+          "count": 103,
+          "ok": 103,
+          "err": 0,
+          "errRate": 0,
+          "rps": 6.9,
+          "latency": {
+            "min": 4237,
+            "avg": 40225,
+            "p50": 42739,
+            "p90": 64298,
+            "p95": 65286,
+            "p99": 67715,
+            "max": 67853
+          },
+          "statuses": {
+            "201": 103
+          }
+        },
+        "factura": {
+          "count": 74,
+          "ok": 74,
+          "err": 0,
+          "errRate": 0,
+          "rps": 4.9,
+          "latency": {
+            "min": 5521,
+            "avg": 42948,
+            "p50": 46700,
+            "p90": 64370,
+            "p95": 65279,
+            "p99": 66502,
+            "max": 66502
+          },
+          "statuses": {
+            "302": 74
+          }
+        },
+        "usuario": {
+          "count": 26,
+          "ok": 26,
+          "err": 0,
+          "errRate": 0,
+          "rps": 1.7,
+          "latency": {
+            "min": 8065,
+            "avg": 40926,
+            "p50": 47324,
+            "p90": 63836,
+            "p95": 67106,
+            "p99": 67677,
+            "max": 67677
+          },
+          "statuses": {
+            "302": 26
+          }
+        },
+        "perfil": {
+          "count": 82,
+          "ok": 82,
+          "err": 0,
+          "errRate": 0,
+          "rps": 5.5,
+          "latency": {
+            "min": 3951,
+            "avg": 38004,
+            "p50": 38094,
+            "p90": 61396,
+            "p95": 62256,
+            "p99": 68310,
+            "max": 68310
+          },
+          "statuses": {
+            "302": 82
+          }
+        }
+      },
+      "cpuBusyPct": 99.8,
+      "loadavgBefore": "15.59 14.07 13.28",
+      "loadavgAfter": "40.57 22.23 16.19"
+    },
+    {
+      "concurrency": 1000,
+      "label": "",
+      "warmupSec": 1.5,
+      "durationSec": 20,
+      "wallSec": 149.5,
+      "total": 1149,
+      "ok": 1149,
+      "err": 0,
+      "errRate": 0,
+      "rps": 57.5,
+      "okRps": 57.5,
+      "latency": {
+        "min": 3672,
+        "avg": 75444,
+        "p50": 76944,
+        "p90": 128071,
+        "p95": 129453,
+        "p99": 135084,
+        "max": 147781
+      },
+      "statuses": {
+        "200": 593,
+        "201": 165,
+        "302": 391
+      },
+      "scenarios": {
+        "consulta": {
+          "count": 431,
+          "ok": 431,
+          "err": 0,
+          "errRate": 0,
+          "rps": 21.6,
+          "latency": {
+            "min": 4929,
+            "avg": 75138,
+            "p50": 76308,
+            "p90": 128070,
+            "p95": 129023,
+            "p99": 130632,
+            "max": 132601
+          },
+          "statuses": {
+            "200": 431
+          }
+        },
+        "busqueda": {
+          "count": 162,
+          "ok": 162,
+          "err": 0,
+          "errRate": 0,
+          "rps": 8.1,
+          "latency": {
+            "min": 3672,
+            "avg": 73805,
+            "p50": 77036,
+            "p90": 126186,
+            "p95": 127914,
+            "p99": 130318,
+            "max": 131176
+          },
+          "statuses": {
+            "200": 162
+          }
+        },
+        "login": {
+          "count": 70,
+          "ok": 70,
+          "err": 0,
+          "errRate": 0,
+          "rps": 3.5,
+          "latency": {
+            "min": 12195,
+            "avg": 85395,
+            "p50": 85198,
+            "p90": 138301,
+            "p95": 142734,
+            "p99": 147781,
+            "max": 147781
+          },
+          "statuses": {
+            "302": 70
+          }
+        },
+        "compra": {
+          "count": 165,
+          "ok": 165,
+          "err": 0,
+          "errRate": 0,
+          "rps": 8.3,
+          "latency": {
+            "min": 4652,
+            "avg": 72930,
+            "p50": 71957,
+            "p90": 128577,
+            "p95": 129955,
+            "p99": 132377,
+            "max": 133561
+          },
+          "statuses": {
+            "201": 165
+          }
+        },
+        "factura": {
+          "count": 122,
+          "ok": 122,
+          "err": 0,
+          "errRate": 0,
+          "rps": 6.1,
+          "latency": {
+            "min": 4765,
+            "avg": 77191,
+            "p50": 77557,
+            "p90": 127713,
+            "p95": 129212,
+            "p99": 130697,
+            "max": 131570
+          },
+          "statuses": {
+            "302": 122
+          }
+        },
+        "usuario": {
+          "count": 63,
+          "ok": 63,
+          "err": 0,
+          "errRate": 0,
+          "rps": 3.2,
+          "latency": {
+            "min": 4362,
+            "avg": 77903,
+            "p50": 80430,
+            "p90": 129401,
+            "p95": 130459,
+            "p99": 135252,
+            "max": 135252
+          },
+          "statuses": {
+            "302": 63
+          }
+        },
+        "perfil": {
+          "count": 136,
+          "ok": 136,
+          "err": 0,
+          "errRate": 0,
+          "rps": 6.8,
+          "latency": {
+            "min": 4089,
+            "avg": 73587,
+            "p50": 73876,
+            "p90": 126284,
+            "p95": 127796,
+            "p99": 130751,
+            "max": 132826
+          },
+          "statuses": {
+            "302": 136
+          }
+        }
+      },
+      "cpuBusyPct": 99.9,
+      "loadavgBefore": "40.57 22.23 16.19",
+      "loadavgAfter": "51.97 34.38 21.69"
+    },
+    {
+      "concurrency": 2000,
+      "label": "",
+      "warmupSec": 1.5,
+      "durationSec": 25,
+      "wallSec": 277.89,
+      "total": 2197,
+      "ok": 2197,
+      "err": 0,
+      "errRate": 0,
+      "rps": 87.9,
+      "okRps": 87.9,
+      "latency": {
+        "min": 2940,
+        "avg": 138750,
+        "p50": 138871,
+        "p90": 248675,
+        "p95": 251860,
+        "p99": 258331,
+        "max": 270914
+      },
+      "statuses": {
+        "200": 1124,
+        "201": 327,
+        "302": 746
+      },
+      "scenarios": {
+        "consulta": {
+          "count": 776,
+          "ok": 776,
+          "err": 0,
+          "errRate": 0,
+          "rps": 31,
+          "latency": {
+            "min": 3930,
+            "avg": 140363,
+            "p50": 140412,
+            "p90": 249365,
+            "p95": 251396,
+            "p99": 254346,
+            "max": 260230
+          },
+          "statuses": {
+            "200": 776
+          }
+        },
+        "busqueda": {
+          "count": 348,
+          "ok": 348,
+          "err": 0,
+          "errRate": 0,
+          "rps": 13.9,
+          "latency": {
+            "min": 3447,
+            "avg": 127499,
+            "p50": 119029,
+            "p90": 240827,
+            "p95": 249317,
+            "p99": 252129,
+            "max": 258092
+          },
+          "statuses": {
+            "200": 348
+          }
+        },
+        "login": {
+          "count": 110,
+          "ok": 110,
+          "err": 0,
+          "errRate": 0,
+          "rps": 4.4,
+          "latency": {
+            "min": 7242,
+            "avg": 148346,
+            "p50": 155244,
+            "p90": 258039,
+            "p95": 264922,
+            "p99": 267993,
+            "max": 270914
+          },
+          "statuses": {
+            "302": 110
+          }
+        },
+        "compra": {
+          "count": 327,
+          "ok": 327,
+          "err": 0,
+          "errRate": 0,
+          "rps": 13.1,
+          "latency": {
+            "min": 6302,
+            "avg": 144017,
+            "p50": 151530,
+            "p90": 251575,
+            "p95": 254412,
+            "p99": 259195,
+            "max": 264352
+          },
+          "statuses": {
+            "201": 327
+          }
+        },
+        "factura": {
+          "count": 223,
+          "ok": 223,
+          "err": 0,
+          "errRate": 0,
+          "rps": 8.9,
+          "latency": {
+            "min": 3413,
+            "avg": 135087,
+            "p50": 131065,
+            "p90": 238304,
+            "p95": 249094,
+            "p99": 256528,
+            "max": 264576
+          },
+          "statuses": {
+            "302": 223
+          }
+        },
+        "usuario": {
+          "count": 95,
+          "ok": 95,
+          "err": 0,
+          "errRate": 0,
+          "rps": 3.8,
+          "latency": {
+            "min": 8145,
+            "avg": 141183,
+            "p50": 147557,
+            "p90": 252374,
+            "p95": 252723,
+            "p99": 259678,
+            "max": 259678
+          },
+          "statuses": {
+            "302": 95
+          }
+        },
+        "perfil": {
+          "count": 318,
+          "ok": 318,
+          "err": 0,
+          "errRate": 0,
+          "rps": 12.7,
+          "latency": {
+            "min": 2940,
+            "avg": 140230,
+            "p50": 141818,
+            "p90": 247966,
+            "p95": 250693,
+            "p99": 252324,
+            "max": 257724
+          },
+          "statuses": {
+            "302": 318
+          }
+        }
+      },
+      "cpuBusyPct": 99.9,
+      "loadavgBefore": "51.97 34.38 21.69",
+      "loadavgAfter": "47.54 44.02 29.20"
+    }
+  ]
+}

@@ -10,7 +10,7 @@ interface BrandRepositoryContract
     /**
      * Obtiene marcas activas de una compañía.
      */
-    public function getActive(int $companyId): Collection;
+    public function getActive(?int $companyId): Collection;
 
     /**
      * Obtiene una marca por ID y compañía.

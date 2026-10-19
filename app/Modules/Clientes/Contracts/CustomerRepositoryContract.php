@@ -10,7 +10,7 @@ interface CustomerRepositoryContract
     /**
      * Busca clientes por término de búsqueda.
      */
-    public function search(int $companyId, string $term): Collection;
+    public function search(?int $companyId, string $term): Collection;
 
     /**
      * Obtiene un cliente por ID y compañía.

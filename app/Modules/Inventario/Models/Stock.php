@@ -3,6 +3,7 @@
 namespace App\Modules\Inventario\Models;
 
 use App\Modules\Productos\Models\Product;
+use Database\Factories\StockFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,7 +12,8 @@ class Stock extends Model
 {
     use HasFactory;
 
-    protected static string $factory = \Database\Factories\StockFactory::class;
+    protected static string $factory = StockFactory::class;
+
     protected $fillable = [
         'warehouse_id',
         'product_id',
@@ -35,11 +37,6 @@ class Stock extends Model
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
-    }
-
-    public function isBelowMinimum(): bool
-    {
-        return $this->quantity <= $this->minimum_stock_snapshot;
     }
 
     public function hasSufficientStock(int $requested): bool

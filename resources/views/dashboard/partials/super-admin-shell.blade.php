@@ -5,20 +5,21 @@
     'logRows' => [],
 ])
 
-{{-- Contenedor principal del dashboard de super admin.
-     Orquesta parciales más pequeños para mantener esta vista limpia y legible. --}}
-<section class="brutal-shell px-4 py-8 sm:px-6 lg:px-8">
-    <div class="mx-auto grid max-w-7xl gap-8 xl:grid-cols-[290px_minmax(0,1fr)]">
-        @include('dashboard.partials.sidebar', ['user' => $user])
+{{-- Contenedor principal del dashboard.
+     La navegación global vive en layouts/sidebar; aquí sólo se compone un
+     bento grid compacto con KPIs, módulos y actividad reciente. --}}
+<section class="brutal-shell px-4 py-6 sm:px-6 lg:px-8">
+    <div class="mx-auto max-w-7xl space-y-5">
+        @include('dashboard.partials.summary-grid', ['summary' => $summary])
+        @include('dashboard.partials.modules-grid', ['modules' => $modules])
 
-        <div class="space-y-8">
-            @include('dashboard.partials.summary-grid', ['summary' => $summary])
-            @include('dashboard.partials.modules-grid', ['modules' => $modules])
-
-            <section class="grid gap-5 xl:grid-cols-[1.3fr_0.7fr]">
+        <section class="grid gap-5 lg:grid-cols-3">
+            <div class="lg:col-span-2">
                 @include('dashboard.partials.activity-table', ['logRows' => $logRows])
+            </div>
+            <div class="lg:col-span-1">
                 @include('dashboard.partials.insights-panel')
-            </section>
-        </div>
+            </div>
+        </section>
     </div>
 </section>

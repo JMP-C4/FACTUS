@@ -3,19 +3,24 @@
 namespace App\Modules\Productos\Models;
 
 use App\Models\Company;
+use App\Modules\Support\Models\Concerns\BelongsToCompany;
+use Database\Factories\ProductFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Product extends Model
 {
+    use BelongsToCompany;
     use HasFactory;
 
-    protected static string $factory = \Database\Factories\ProductFactory::class;
+    protected static string $factory = ProductFactory::class;
+
     protected $fillable = [
         'company_id',
         'category_id',
         'brand_id',
+        'tax_id',
         'name',
         'description',
         'sku',
@@ -53,14 +58,14 @@ class Product extends Model
         return $this->belongsTo(Brand::class);
     }
 
+    public function tax(): BelongsTo
+    {
+        return $this->belongsTo(Tax::class);
+    }
+
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
-    }
-
-    public function scopeForCompany($query, int $companyId)
-    {
-        return $query->where('company_id', $companyId);
     }
 
     public function scopeSearch($query, string $term)
@@ -75,15 +80,5 @@ class Product extends Model
     public function scopeFindByBarcode($query, string $barcode)
     {
         return $query->where('barcode', $barcode);
-    }
-
-    public function hasStock(): bool
-    {
-        return $this->minimum_stock > 0;
-    }
-
-    public function getPriceWithTax(): float
-    {
-        return $this->price + ($this->price * $this->tax_rate / 100);
     }
 }

@@ -3,11 +3,14 @@
 namespace App\Modules\Facturacion\Models;
 
 use App\Models\Company;
+use App\Modules\Support\Models\Concerns\BelongsToCompany;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class NumberingRange extends Model
 {
+    use BelongsToCompany;
+
     protected $fillable = [
         'company_id',
         'external_id',
@@ -40,19 +43,9 @@ class NumberingRange extends Model
         return $this->belongsTo(Company::class);
     }
 
-    public function scopeForCompany($query, int $companyId)
-    {
-        return $query->where('company_id', $companyId);
-    }
-
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
-    }
-
-    public function isWithinRange(): bool
-    {
-        return $this->current_number < $this->to_number;
     }
 
     public function isCurrentlyValid(): bool

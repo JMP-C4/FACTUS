@@ -50,9 +50,9 @@ class StockMovement extends Model
         return $this->belongsTo(User::class, 'performed_by');
     }
 
-    public function scopeForCompany($query, int $companyId)
+    public function scopeForCompany($query, ?int $companyId)
     {
-        return $query->whereHas('warehouse', fn ($q) => $q->where('company_id', $companyId));
+        return $query->when($companyId !== null, fn ($q) => $q->whereHas('warehouse', fn ($w) => $w->where('company_id', $companyId)));
     }
 
     public function scopeByType($query, string $type)

@@ -1,0 +1,791 @@
+{
+  "generatedAt": "2026-10-19T00:59:00.699Z",
+  "target": "http://127.0.0.1:8090",
+  "gitCommit": "20f52ac",
+  "node": "v24.13.0",
+  "cpuCores": 4,
+  "totalMemGB": 9.6,
+  "inflightCap": 120,
+  "requestTimeoutMs": 90000,
+  "serverWorkers": "48",
+  "mix": [
+    {
+      "name": "consulta",
+      "w": 35,
+      "expect": 200
+    },
+    {
+      "name": "busqueda",
+      "w": 15,
+      "expect": 200
+    },
+    {
+      "name": "login",
+      "w": 5,
+      "expect": 302
+    },
+    {
+      "name": "compra",
+      "w": 15,
+      "expect": 201
+    },
+    {
+      "name": "factura",
+      "w": 10,
+      "expect": 302
+    },
+    {
+      "name": "usuario",
+      "w": 5,
+      "expect": 302
+    },
+    {
+      "name": "perfil",
+      "w": 15,
+      "expect": 302
+    }
+  ],
+  "seedCounts": {
+    "users": 203,
+    "invoices": 300,
+    "invoices_issued": 300,
+    "sessions": 2000
+  },
+  "levels": [
+    {
+      "concurrency": 10,
+      "label": "baseline",
+      "warmupSec": 1.5,
+      "durationSec": 8,
+      "wallSec": 9.5,
+      "total": 0,
+      "ok": 0,
+      "err": 0,
+      "errRate": 0,
+      "rps": 0,
+      "okRps": 0,
+      "latency": {
+        "min": 0,
+        "avg": 0,
+        "p50": 0,
+        "p90": 0,
+        "p95": 0,
+        "p99": 0,
+        "max": 0
+      },
+      "statuses": {},
+      "scenarios": {
+        "consulta": {
+          "count": 0,
+          "ok": 0,
+          "err": 0,
+          "errRate": 0,
+          "rps": 0,
+          "latency": {
+            "min": 0,
+            "avg": 0,
+            "p50": 0,
+            "p90": 0,
+            "p95": 0,
+            "p99": 0,
+            "max": 0
+          },
+          "statuses": {}
+        },
+        "busqueda": {
+          "count": 0,
+          "ok": 0,
+          "err": 0,
+          "errRate": 0,
+          "rps": 0,
+          "latency": {
+            "min": 0,
+            "avg": 0,
+            "p50": 0,
+            "p90": 0,
+            "p95": 0,
+            "p99": 0,
+            "max": 0
+          },
+          "statuses": {}
+        },
+        "login": {
+          "count": 0,
+          "ok": 0,
+          "err": 0,
+          "errRate": 0,
+          "rps": 0,
+          "latency": {
+            "min": 0,
+            "avg": 0,
+            "p50": 0,
+            "p90": 0,
+            "p95": 0,
+            "p99": 0,
+            "max": 0
+          },
+          "statuses": {}
+        },
+        "compra": {
+          "count": 0,
+          "ok": 0,
+          "err": 0,
+          "errRate": 0,
+          "rps": 0,
+          "latency": {
+            "min": 0,
+            "avg": 0,
+            "p50": 0,
+            "p90": 0,
+            "p95": 0,
+            "p99": 0,
+            "max": 0
+          },
+          "statuses": {}
+        },
+        "factura": {
+          "count": 0,
+          "ok": 0,
+          "err": 0,
+          "errRate": 0,
+          "rps": 0,
+          "latency": {
+            "min": 0,
+            "avg": 0,
+            "p50": 0,
+            "p90": 0,
+            "p95": 0,
+            "p99": 0,
+            "max": 0
+          },
+          "statuses": {}
+        },
+        "usuario": {
+          "count": 0,
+          "ok": 0,
+          "err": 0,
+          "errRate": 0,
+          "rps": 0,
+          "latency": {
+            "min": 0,
+            "avg": 0,
+            "p50": 0,
+            "p90": 0,
+            "p95": 0,
+            "p99": 0,
+            "max": 0
+          },
+          "statuses": {}
+        },
+        "perfil": {
+          "count": 0,
+          "ok": 0,
+          "err": 0,
+          "errRate": 0,
+          "rps": 0,
+          "latency": {
+            "min": 0,
+            "avg": 0,
+            "p50": 0,
+            "p90": 0,
+            "p95": 0,
+            "p99": 0,
+            "max": 0
+          },
+          "statuses": {}
+        }
+      },
+      "cpuBusyPct": 95.2,
+      "loadavgBefore": "12.49 9.65 6.59",
+      "loadavgAfter": "12.47 9.75 6.65"
+    },
+    {
+      "concurrency": 100,
+      "label": "",
+      "warmupSec": 1.5,
+      "durationSec": 15,
+      "wallSec": 16.5,
+      "total": 0,
+      "ok": 0,
+      "err": 0,
+      "errRate": 0,
+      "rps": 0,
+      "okRps": 0,
+      "latency": {
+        "min": 0,
+        "avg": 0,
+        "p50": 0,
+        "p90": 0,
+        "p95": 0,
+        "p99": 0,
+        "max": 0
+      },
+      "statuses": {},
+      "scenarios": {
+        "consulta": {
+          "count": 0,
+          "ok": 0,
+          "err": 0,
+          "errRate": 0,
+          "rps": 0,
+          "latency": {
+            "min": 0,
+            "avg": 0,
+            "p50": 0,
+            "p90": 0,
+            "p95": 0,
+            "p99": 0,
+            "max": 0
+          },
+          "statuses": {}
+        },
+        "busqueda": {
+          "count": 0,
+          "ok": 0,
+          "err": 0,
+          "errRate": 0,
+          "rps": 0,
+          "latency": {
+            "min": 0,
+            "avg": 0,
+            "p50": 0,
+            "p90": 0,
+            "p95": 0,
+            "p99": 0,
+            "max": 0
+          },
+          "statuses": {}
+        },
+        "login": {
+          "count": 0,
+          "ok": 0,
+          "err": 0,
+          "errRate": 0,
+          "rps": 0,
+          "latency": {
+            "min": 0,
+            "avg": 0,
+            "p50": 0,
+            "p90": 0,
+            "p95": 0,
+            "p99": 0,
+            "max": 0
+          },
+          "statuses": {}
+        },
+        "compra": {
+          "count": 0,
+          "ok": 0,
+          "err": 0,
+          "errRate": 0,
+          "rps": 0,
+          "latency": {
+            "min": 0,
+            "avg": 0,
+            "p50": 0,
+            "p90": 0,
+            "p95": 0,
+            "p99": 0,
+            "max": 0
+          },
+          "statuses": {}
+        },
+        "factura": {
+          "count": 0,
+          "ok": 0,
+          "err": 0,
+          "errRate": 0,
+          "rps": 0,
+          "latency": {
+            "min": 0,
+            "avg": 0,
+            "p50": 0,
+            "p90": 0,
+            "p95": 0,
+            "p99": 0,
+            "max": 0
+          },
+          "statuses": {}
+        },
+        "usuario": {
+          "count": 0,
+          "ok": 0,
+          "err": 0,
+          "errRate": 0,
+          "rps": 0,
+          "latency": {
+            "min": 0,
+            "avg": 0,
+            "p50": 0,
+            "p90": 0,
+            "p95": 0,
+            "p99": 0,
+            "max": 0
+          },
+          "statuses": {}
+        },
+        "perfil": {
+          "count": 0,
+          "ok": 0,
+          "err": 0,
+          "errRate": 0,
+          "rps": 0,
+          "latency": {
+            "min": 0,
+            "avg": 0,
+            "p50": 0,
+            "p90": 0,
+            "p95": 0,
+            "p99": 0,
+            "max": 0
+          },
+          "statuses": {}
+        }
+      },
+      "cpuBusyPct": 95.7,
+      "loadavgBefore": "12.47 9.75 6.65",
+      "loadavgAfter": "11.53 9.68 6.68"
+    },
+    {
+      "concurrency": 500,
+      "label": "",
+      "warmupSec": 1.5,
+      "durationSec": 15,
+      "wallSec": 16.52,
+      "total": 0,
+      "ok": 0,
+      "err": 0,
+      "errRate": 0,
+      "rps": 0,
+      "okRps": 0,
+      "latency": {
+        "min": 0,
+        "avg": 0,
+        "p50": 0,
+        "p90": 0,
+        "p95": 0,
+        "p99": 0,
+        "max": 0
+      },
+      "statuses": {},
+      "scenarios": {
+        "consulta": {
+          "count": 0,
+          "ok": 0,
+          "err": 0,
+          "errRate": 0,
+          "rps": 0,
+          "latency": {
+            "min": 0,
+            "avg": 0,
+            "p50": 0,
+            "p90": 0,
+            "p95": 0,
+            "p99": 0,
+            "max": 0
+          },
+          "statuses": {}
+        },
+        "busqueda": {
+          "count": 0,
+          "ok": 0,
+          "err": 0,
+          "errRate": 0,
+          "rps": 0,
+          "latency": {
+            "min": 0,
+            "avg": 0,
+            "p50": 0,
+            "p90": 0,
+            "p95": 0,
+            "p99": 0,
+            "max": 0
+          },
+          "statuses": {}
+        },
+        "login": {
+          "count": 0,
+          "ok": 0,
+          "err": 0,
+          "errRate": 0,
+          "rps": 0,
+          "latency": {
+            "min": 0,
+            "avg": 0,
+            "p50": 0,
+            "p90": 0,
+            "p95": 0,
+            "p99": 0,
+            "max": 0
+          },
+          "statuses": {}
+        },
+        "compra": {
+          "count": 0,
+          "ok": 0,
+          "err": 0,
+          "errRate": 0,
+          "rps": 0,
+          "latency": {
+            "min": 0,
+            "avg": 0,
+            "p50": 0,
+            "p90": 0,
+            "p95": 0,
+            "p99": 0,
+            "max": 0
+          },
+          "statuses": {}
+        },
+        "factura": {
+          "count": 0,
+          "ok": 0,
+          "err": 0,
+          "errRate": 0,
+          "rps": 0,
+          "latency": {
+            "min": 0,
+            "avg": 0,
+            "p50": 0,
+            "p90": 0,
+            "p95": 0,
+            "p99": 0,
+            "max": 0
+          },
+          "statuses": {}
+        },
+        "usuario": {
+          "count": 0,
+          "ok": 0,
+          "err": 0,
+          "errRate": 0,
+          "rps": 0,
+          "latency": {
+            "min": 0,
+            "avg": 0,
+            "p50": 0,
+            "p90": 0,
+            "p95": 0,
+            "p99": 0,
+            "max": 0
+          },
+          "statuses": {}
+        },
+        "perfil": {
+          "count": 0,
+          "ok": 0,
+          "err": 0,
+          "errRate": 0,
+          "rps": 0,
+          "latency": {
+            "min": 0,
+            "avg": 0,
+            "p50": 0,
+            "p90": 0,
+            "p95": 0,
+            "p99": 0,
+            "max": 0
+          },
+          "statuses": {}
+        }
+      },
+      "cpuBusyPct": 96.2,
+      "loadavgBefore": "11.53 9.68 6.68",
+      "loadavgAfter": "11.09 9.68 6.75"
+    },
+    {
+      "concurrency": 1000,
+      "label": "",
+      "warmupSec": 1.5,
+      "durationSec": 20,
+      "wallSec": 21.5,
+      "total": 0,
+      "ok": 0,
+      "err": 0,
+      "errRate": 0,
+      "rps": 0,
+      "okRps": 0,
+      "latency": {
+        "min": 0,
+        "avg": 0,
+        "p50": 0,
+        "p90": 0,
+        "p95": 0,
+        "p99": 0,
+        "max": 0
+      },
+      "statuses": {},
+      "scenarios": {
+        "consulta": {
+          "count": 0,
+          "ok": 0,
+          "err": 0,
+          "errRate": 0,
+          "rps": 0,
+          "latency": {
+            "min": 0,
+            "avg": 0,
+            "p50": 0,
+            "p90": 0,
+            "p95": 0,
+            "p99": 0,
+            "max": 0
+          },
+          "statuses": {}
+        },
+        "busqueda": {
+          "count": 0,
+          "ok": 0,
+          "err": 0,
+          "errRate": 0,
+          "rps": 0,
+          "latency": {
+            "min": 0,
+            "avg": 0,
+            "p50": 0,
+            "p90": 0,
+            "p95": 0,
+            "p99": 0,
+            "max": 0
+          },
+          "statuses": {}
+        },
+        "login": {
+          "count": 0,
+          "ok": 0,
+          "err": 0,
+          "errRate": 0,
+          "rps": 0,
+          "latency": {
+            "min": 0,
+            "avg": 0,
+            "p50": 0,
+            "p90": 0,
+            "p95": 0,
+            "p99": 0,
+            "max": 0
+          },
+          "statuses": {}
+        },
+        "compra": {
+          "count": 0,
+          "ok": 0,
+          "err": 0,
+          "errRate": 0,
+          "rps": 0,
+          "latency": {
+            "min": 0,
+            "avg": 0,
+            "p50": 0,
+            "p90": 0,
+            "p95": 0,
+            "p99": 0,
+            "max": 0
+          },
+          "statuses": {}
+        },
+        "factura": {
+          "count": 0,
+          "ok": 0,
+          "err": 0,
+          "errRate": 0,
+          "rps": 0,
+          "latency": {
+            "min": 0,
+            "avg": 0,
+            "p50": 0,
+            "p90": 0,
+            "p95": 0,
+            "p99": 0,
+            "max": 0
+          },
+          "statuses": {}
+        },
+        "usuario": {
+          "count": 0,
+          "ok": 0,
+          "err": 0,
+          "errRate": 0,
+          "rps": 0,
+          "latency": {
+            "min": 0,
+            "avg": 0,
+            "p50": 0,
+            "p90": 0,
+            "p95": 0,
+            "p99": 0,
+            "max": 0
+          },
+          "statuses": {}
+        },
+        "perfil": {
+          "count": 0,
+          "ok": 0,
+          "err": 0,
+          "errRate": 0,
+          "rps": 0,
+          "latency": {
+            "min": 0,
+            "avg": 0,
+            "p50": 0,
+            "p90": 0,
+            "p95": 0,
+            "p99": 0,
+            "max": 0
+          },
+          "statuses": {}
+        }
+      },
+      "cpuBusyPct": 94.5,
+      "loadavgBefore": "11.09 9.68 6.75",
+      "loadavgAfter": "10.57 9.66 6.80"
+    },
+    {
+      "concurrency": 2000,
+      "label": "",
+      "warmupSec": 1.5,
+      "durationSec": 25,
+      "wallSec": 26.51,
+      "total": 0,
+      "ok": 0,
+      "err": 0,
+      "errRate": 0,
+      "rps": 0,
+      "okRps": 0,
+      "latency": {
+        "min": 0,
+        "avg": 0,
+        "p50": 0,
+        "p90": 0,
+        "p95": 0,
+        "p99": 0,
+        "max": 0
+      },
+      "statuses": {},
+      "scenarios": {
+        "consulta": {
+          "count": 0,
+          "ok": 0,
+          "err": 0,
+          "errRate": 0,
+          "rps": 0,
+          "latency": {
+            "min": 0,
+            "avg": 0,
+            "p50": 0,
+            "p90": 0,
+            "p95": 0,
+            "p99": 0,
+            "max": 0
+          },
+          "statuses": {}
+        },
+        "busqueda": {
+          "count": 0,
+          "ok": 0,
+          "err": 0,
+          "errRate": 0,
+          "rps": 0,
+          "latency": {
+            "min": 0,
+            "avg": 0,
+            "p50": 0,
+            "p90": 0,
+            "p95": 0,
+            "p99": 0,
+            "max": 0
+          },
+          "statuses": {}
+        },
+        "login": {
+          "count": 0,
+          "ok": 0,
+          "err": 0,
+          "errRate": 0,
+          "rps": 0,
+          "latency": {
+            "min": 0,
+            "avg": 0,
+            "p50": 0,
+            "p90": 0,
+            "p95": 0,
+            "p99": 0,
+            "max": 0
+          },
+          "statuses": {}
+        },
+        "compra": {
+          "count": 0,
+          "ok": 0,
+          "err": 0,
+          "errRate": 0,
+          "rps": 0,
+          "latency": {
+            "min": 0,
+            "avg": 0,
+            "p50": 0,
+            "p90": 0,
+            "p95": 0,
+            "p99": 0,
+            "max": 0
+          },
+          "statuses": {}
+        },
+        "factura": {
+          "count": 0,
+          "ok": 0,
+          "err": 0,
+          "errRate": 0,
+          "rps": 0,
+          "latency": {
+            "min": 0,
+            "avg": 0,
+            "p50": 0,
+            "p90": 0,
+            "p95": 0,
+            "p99": 0,
+            "max": 0
+          },
+          "statuses": {}
+        },
+        "usuario": {
+          "count": 0,
+          "ok": 0,
+          "err": 0,
+          "errRate": 0,
+          "rps": 0,
+          "latency": {
+            "min": 0,
+            "avg": 0,
+            "p50": 0,
+            "p90": 0,
+            "p95": 0,
+            "p99": 0,
+            "max": 0
+          },
+          "statuses": {}
+        },
+        "perfil": {
+          "count": 0,
+          "ok": 0,
+          "err": 0,
+          "errRate": 0,
+          "rps": 0,
+          "latency": {
+            "min": 0,
+            "avg": 0,
+            "p50": 0,
+            "p90": 0,
+            "p95": 0,
+            "p99": 0,
+            "max": 0
+          },
+          "statuses": {}
+        }
+      },
+      "cpuBusyPct": 90.3,
+      "loadavgBefore": "10.57 9.66 6.80",
+      "loadavgAfter": "11.33 9.96 6.98"
+    }
+  ]
+}

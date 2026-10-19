@@ -10,8 +10,10 @@ use App\Modules\Facturacion\Http\Requests\StoreInvoiceRequest;
 use App\Modules\Facturacion\Models\Invoice;
 use App\Modules\Facturacion\Services\InvoiceService;
 use App\Modules\Productos\Contracts\ProductCatalogContract;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\View\View;
 
 final class InvoiceController extends Controller
@@ -44,8 +46,14 @@ final class InvoiceController extends Controller
 
     public function store(StoreInvoiceRequest $request): RedirectResponse
     {
+        $companyId = $this->currentCompanyId($request);
+
+        if ($companyId === null) {
+            return back()->with('error', 'Debes pertenecer a una compañía para crear facturas.');
+        }
+
         $invoice = $this->invoiceService->create(
-            $request->user()->company_id,
+            $companyId,
             $request->user()->id,
             $request->validated(),
         );
@@ -59,9 +67,20 @@ final class InvoiceController extends Controller
     {
         $this->authorizeInvoice($invoice, $request);
 
-        $invoice->load(['items', 'payments', 'customer', 'numberingRange', 'user']);
+        $invoice->load(['items', 'payments', 'customer', 'numberingRange', 'user', 'creditNotes.user']);
 
         return view('facturacion::invoices.show', compact('invoice'));
+    }
+
+    public function downloadPdf(Request $request, Invoice $invoice): Response
+    {
+        $this->authorizeInvoice($invoice, $request);
+
+        $invoice->load(['items', 'payments', 'customer', 'numberingRange', 'user', 'company', 'branch']);
+
+        $pdf = Pdf::loadView('facturacion::invoices.pdf', compact('invoice'));
+
+        return $pdf->download("factura-{$invoice->invoice_number}.pdf");
     }
 
     public function issue(Request $request, Invoice $invoice): RedirectResponse

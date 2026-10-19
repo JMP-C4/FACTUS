@@ -40,6 +40,13 @@
                     </div>
                 </div>
 
+                @if($invoice->cufe || $invoice->qr_url)
+                    <div class="border-t-[2px] border-ink pt-6">
+                        <p class="brutal-kicker mb-3 text-xs">Verificación electrónica</p>
+                        <x-document-codes :invoice="$invoice" :qr-size="150" :barcode-height="60" />
+                    </div>
+                @endif
+
                 <div>
                     <h2 class="brutal-kicker mb-3 text-xs">Ítems</h2>
                     <div class="overflow-x-auto">

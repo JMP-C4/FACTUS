@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Facturacion\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Modules\Clientes\Contracts\CustomerDataProviderContract;
 use App\Modules\Facturacion\Http\Requests\StoreInvoiceRequest;
 use App\Modules\Facturacion\Services\InvoiceService;
@@ -12,6 +13,8 @@ use App\Modules\Productos\Contracts\ProductCatalogContract;
 use App\Modules\Productos\Models\Product;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
 
 final class PosController extends Controller
@@ -85,13 +88,23 @@ final class PosController extends Controller
      */
     public function checkout(StoreInvoiceRequest $request): JsonResponse
     {
-        $invoice = $this->invoiceService->create(
-            $request->user()->company_id,
-            $request->user()->id,
-            $request->validated(),
-        );
+        $companyId = $this->currentCompanyId($request);
 
-        $invoice = $this->invoiceService->issue($invoice);
+        if ($companyId === null) {
+            return response()->json([
+                'message' => 'Debes pertenecer a una compañía para registrar ventas.',
+            ], 403);
+        }
+
+        $invoice = DB::transaction(function () use ($request, $companyId) {
+            $invoice = $this->invoiceService->create(
+                $companyId,
+                $request->user()->id,
+                $request->validated(),
+            );
+
+            return $this->invoiceService->issue($invoice);
+        });
 
         return response()->json([
             'message' => 'Venta registrada y factura emitida.',
@@ -105,5 +118,59 @@ final class PosController extends Controller
                     : null,
             ],
         ], 201);
+    }
+
+    /**
+     * Autoriza el retiro de un producto del carrito del POS.
+     *
+     * Admite dos métodos: un código de autorización configurado o las
+     * credenciales de un supervisor/admin.
+     */
+    public function authorizeRemoval(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'code' => ['nullable', 'string', 'max:255'],
+            'email' => ['nullable', 'email', 'max:255'],
+            'password' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        $code = (string) config('pos.authorization_code');
+
+        if (($validated['code'] ?? '') !== '' && $code !== '' && hash_equals($code, (string) $validated['code'])) {
+            return response()->json([
+                'authorized' => true,
+                'method' => 'code',
+                'authorized_by' => 'Código de autorización',
+            ]);
+        }
+
+        if (($validated['email'] ?? '') !== '' && ($validated['password'] ?? '') !== '') {
+            $supervisor = User::query()->where('email', $validated['email'])->first();
+
+            if (
+                $supervisor !== null
+                && Hash::check((string) $validated['password'], $supervisor->password)
+                && $this->isRemovalSupervisor($supervisor)
+            ) {
+                return response()->json([
+                    'authorized' => true,
+                    'method' => 'credentials',
+                    'authorized_by' => $supervisor->name,
+                ]);
+            }
+        }
+
+        return response()->json([
+            'authorized' => false,
+            'message' => 'Autorización denegada. Verifica el código o las credenciales de supervisor.',
+        ], 403);
+    }
+
+    /**
+     * Determina si un usuario puede autorizar el retiro de productos.
+     */
+    private function isRemovalSupervisor(User $user): bool
+    {
+        return $user->hasAnyRole(config('billing.pos_removal_roles'));
     }
 }

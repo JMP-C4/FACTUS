@@ -28,4 +28,14 @@ interface BillingGatewayContract
      * Anula una factura emitida usando su número de referencia.
      */
     public function cancel(int $companyId, string $referenceCode): array;
+
+    /**
+     * Construye el payload de una nota de crédito sobre una factura origen.
+     */
+    public function buildCreditNotePayload(Invoice $invoice, string $correctionConceptCode, ?string $reason = null): array;
+
+    /**
+     * Emite una nota de crédito local y retorna la respuesta normalizada.
+     */
+    public function issueCreditNote(int $companyId, array $payload, ?int $creditNoteId = null): array;
 }

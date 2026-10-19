@@ -104,7 +104,7 @@
                                 type="text"
                                 id="barcode"
                                 name="barcode"
-                                value="{{ old('barcode') }}"
+                                value="{{ old('barcode', request('barcode')) }}"
                                 class="brutal-input"
                             >
                             @error('barcode')
@@ -165,19 +165,43 @@
                             @enderror
                         </div>
 
-                        <div>
-                            <label for="tax_rate" class="brutal-label mb-1 block">Tasa de Impuesto (%) *</label>
-                            <input
-                                type="number"
-                                id="tax_rate"
-                                name="tax_rate"
-                                value="{{ old('tax_rate', '19') }}"
-                                step="0.01"
-                                min="0"
-                                max="100"
-                                class="brutal-input"
-                                required
-                            >
+                        <div x-data="{ rate: '{{ old('tax_rate', $taxes->first()?->rate ?? 0) }}' }">
+                            <label for="tax_id" class="brutal-label mb-1 block">Impuesto (IVA) *</label>
+                            @if($taxes->isEmpty())
+                                <input
+                                    type="number"
+                                    id="tax_rate"
+                                    name="tax_rate"
+                                    value="{{ old('tax_rate', 19) }}"
+                                    step="0.01"
+                                    min="0"
+                                    max="100"
+                                    class="brutal-input"
+                                    required
+                                >
+                            @else
+                                <select
+                                    id="tax_id"
+                                    name="tax_id"
+                                    class="brutal-input"
+                                    x-on:change="rate = $event.target.selectedOptions[0]?.dataset.rate ?? rate"
+                                >
+                                    <option value="">Sin impuesto</option>
+                                    @foreach($taxes as $tax)
+                                        <option
+                                            value="{{ $tax->id }}"
+                                            data-rate="{{ $tax->rate }}"
+                                            {{ (string) old('tax_id') === (string) $tax->id ? 'selected' : '' }}
+                                        >
+                                            {{ $tax->name }} ({{ number_format((float) $tax->rate, 2, ',', '.') }}%)
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <input type="hidden" name="tax_rate" x-model="rate">
+                            @endif
+                            @error('tax_id')
+                                <p class="mt-1 text-xs text-danger">{{ $message }}</p>
+                            @enderror
                             @error('tax_rate')
                                 <p class="mt-1 text-xs text-danger">{{ $message }}</p>
                             @enderror

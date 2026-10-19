@@ -11,6 +11,7 @@ use App\Modules\Facturacion\Models\NumberingRange;
 use App\Modules\Inventario\Models\Stock;
 use App\Modules\Inventario\Models\Warehouse;
 use App\Modules\Productos\Models\Product;
+use App\Modules\Productos\Models\Tax;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Collection;
 
@@ -131,13 +132,15 @@ class DemoSeeder extends Seeder
     private function createProducts(Company $company): Collection
     {
         $products = [
-            ['sku' => 'CAF-001', 'barcode' => '7701000000011', 'name' => 'Café molido 500g', 'price' => 18500, 'tax_rate' => 19],
-            ['sku' => 'PAN-001', 'barcode' => '7701000000028', 'name' => 'Pan tajado', 'price' => 6500, 'tax_rate' => 5],
-            ['sku' => 'LEC-001', 'barcode' => '7701000000035', 'name' => 'Leche entera 1L', 'price' => 4200, 'tax_rate' => 0],
-            ['sku' => 'ARR-001', 'barcode' => '7701000000042', 'name' => 'Arroz 500g', 'price' => 3100, 'tax_rate' => 0],
-            ['sku' => 'GAS-001', 'barcode' => '7701000000059', 'name' => 'Gaseosa 1.5L', 'price' => 5800, 'tax_rate' => 19],
-            ['sku' => 'SNK-001', 'barcode' => '7701000000066', 'name' => 'Papas fritas 105g', 'price' => 4500, 'tax_rate' => 19],
+            ['sku' => 'CAF-001', 'barcode' => '7701000000011', 'name' => 'Café molido 500g', 'price' => 18500, 'tax_rate' => 19, 'tax_code' => 'IVA19'],
+            ['sku' => 'PAN-001', 'barcode' => '7701000000028', 'name' => 'Pan tajado', 'price' => 6500, 'tax_rate' => 5, 'tax_code' => 'IVA5'],
+            ['sku' => 'LEC-001', 'barcode' => '7701000000035', 'name' => 'Leche entera 1L', 'price' => 4200, 'tax_rate' => 0, 'tax_code' => 'IVA0'],
+            ['sku' => 'ARR-001', 'barcode' => '7701000000042', 'name' => 'Arroz 500g', 'price' => 3100, 'tax_rate' => 0, 'tax_code' => 'EXCLUIDO'],
+            ['sku' => 'GAS-001', 'barcode' => '7701000000059', 'name' => 'Gaseosa 1.5L', 'price' => 5800, 'tax_rate' => 19, 'tax_code' => 'IVA19'],
+            ['sku' => 'SNK-001', 'barcode' => '7701000000066', 'name' => 'Papas fritas 105g', 'price' => 4500, 'tax_rate' => 19, 'tax_code' => 'IVA19'],
         ];
+
+        $taxesByCode = Tax::whereNull('company_id')->pluck('id', 'code');
 
         return collect($products)->map(fn (array $data): Product => Product::updateOrCreate(
             ['company_id' => $company->id, 'sku' => $data['sku']],
@@ -145,6 +148,7 @@ class DemoSeeder extends Seeder
                 'name' => $data['name'],
                 'barcode' => $data['barcode'],
                 'price' => $data['price'],
+                'tax_id' => $taxesByCode[$data['tax_code']] ?? null,
                 'tax_rate' => $data['tax_rate'],
                 'unit_measure_code' => '94',
                 'minimum_stock' => 5,

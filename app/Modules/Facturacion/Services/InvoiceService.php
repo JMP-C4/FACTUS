@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace App\Modules\Facturacion\Services;
 
+use App\Modules\Auditoria\Contracts\AuditLoggerContract;
 use App\Modules\Facturacion\Contracts\BillingGatewayContract;
 use App\Modules\Facturacion\Enums\InvoiceStatus;
 use App\Modules\Facturacion\Models\Invoice;
 use App\Modules\Facturacion\Models\InvoiceItem;
 use App\Modules\Facturacion\Models\InvoicePayment;
 use App\Modules\Facturacion\Models\NumberingRange;
+use App\Modules\Inventario\Contracts\SaleStockContract;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 
@@ -17,9 +19,11 @@ final class InvoiceService
 {
     public function __construct(
         private readonly BillingGatewayContract $billing,
+        private readonly SaleStockContract $saleStock,
+        private readonly AuditLoggerContract $auditLogger,
     ) {}
 
-    public function list(int $companyId, array $filters = []): LengthAwarePaginator
+    public function list(?int $companyId, array $filters = []): LengthAwarePaginator
     {
         $query = Invoice::forCompany($companyId)
             ->with(['customer', 'numberingRange']);
@@ -47,7 +51,7 @@ final class InvoiceService
                 'status' => InvoiceStatus::Draft->value,
                 'invoice_number' => $invoiceNumber,
                 'payment_form_code' => $data['payment_form_code'] ?? '1',
-                'payment_method_code' => $data['payment_method_code'] ?? 'cash',
+                'payment_method_code' => $data['payment_method_code'] ?? config('billing.default_payment_method'),
             ]));
 
             $this->createItems($invoice, $data['items']);
@@ -65,6 +69,11 @@ final class InvoiceService
         }
 
         $invoice->load(['items', 'customer', 'numberingRange', 'company']);
+
+        $lines = $this->saleLines($invoice);
+
+        $this->saleStock->assertAvailable($invoice->company_id, $lines);
+
         $payload = $this->billing->buildBillPayload($invoice);
 
         $invoice->update([
@@ -78,16 +87,44 @@ final class InvoiceService
                 $payload,
                 $invoice->id,
             );
-
-            return $this->handleIssueResponse($invoice, $response);
         } catch (\Exception $e) {
             $invoice->update([
                 'status' => InvoiceStatus::Error->value,
                 'billing_response' => ['error' => $e->getMessage()],
             ]);
 
+            $this->auditLogger->log(
+                'invoice_issue_failed',
+                'facturacion',
+                "Error al emitir factura {$invoice->invoice_number}: {$e->getMessage()}",
+                $invoice,
+                ['status' => InvoiceStatus::Error->value],
+            );
+
             throw $e;
         }
+
+        $result = $this->handleIssueResponse($invoice, $response);
+
+        if (in_array($result->status, [InvoiceStatus::Issued, InvoiceStatus::Validated], true)) {
+            $this->saleStock->deductForSale(
+                $invoice->company_id,
+                $lines,
+                $invoice::class,
+                $invoice->id,
+                $invoice->user_id,
+            );
+        }
+
+        $this->auditLogger->log(
+            'invoice_issued',
+            'facturacion',
+            "Factura {$result->invoice_number} emitida (estado {$result->status->value}).",
+            $result,
+            ['status' => $result->status->value, 'total' => $result->total],
+        );
+
+        return $result;
     }
 
     public function cancel(Invoice $invoice): Invoice
@@ -100,12 +137,32 @@ final class InvoiceService
 
         $invoice->update(['status' => InvoiceStatus::Cancelled->value]);
 
+        $this->auditLogger->log(
+            'invoice_cancelled',
+            'facturacion',
+            "Factura {$invoice->invoice_number} cancelada.",
+            $invoice,
+        );
+
         return $invoice->fresh();
     }
 
     // =========================================================================
     // Private Helpers
     // =========================================================================
+
+    /**
+     * @return array<int, array{product_id: int|null, quantity: int}>
+     */
+    private function saleLines(Invoice $invoice): array
+    {
+        return $invoice->items
+            ->map(fn (InvoiceItem $item): array => [
+                'product_id' => $item->product_id,
+                'quantity' => (int) $item->quantity,
+            ])
+            ->all();
+    }
 
     private function resolveNumberingRange(int $companyId): NumberingRange
     {
@@ -167,7 +224,7 @@ final class InvoiceService
                 'tax_total' => $lineTax,
                 'line_total' => $lineSubtotal + $lineTax - ($item['discount'] ?? 0),
                 'tax_code' => $item['tax_code'] ?? null,
-                'unit_measure_code' => $item['unit_measure_code'] ?? '94',
+                'unit_measure_code' => $item['unit_measure_code'] ?? config('billing.default_unit_measure_code'),
                 'product_snapshot' => $item['product_snapshot'] ?? null,
             ]);
         }

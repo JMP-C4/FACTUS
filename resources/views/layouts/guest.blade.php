@@ -13,10 +13,33 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+        <style>[x-cloak] { display: none !important; }</style>
+
+        {{-- Aplica el tema antes del primer render para evitar parpadeo. --}}
+        <script>
+            (function () {
+                try {
+                    const stored = localStorage.getItem('factus.theme');
+                    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    if (stored === 'dark' || (! stored && prefersDark)) {
+                        document.documentElement.classList.add('dark');
+                    }
+                } catch (e) {}
+            })();
+        </script>
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-bg text-ink">
+            <div class="fixed right-4 top-4 z-50">
+                <x-theme-toggle />
+            </div>
+
+            <x-feedback.flash />
+
             {{ $slot }}
         </div>
+
+        <x-feedback.toast-host />
     </body>
 </html>

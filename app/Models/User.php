@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Modules\AccessControl\Models\Permission;
 use App\Modules\AccessControl\Models\Role;
 use App\Modules\AccessControl\Models\UserRole;
 use App\Modules\AccessControl\Traits\HasPermissions;
@@ -73,10 +74,27 @@ class User extends Authenticatable
         ])->withTimestamps();
     }
 
+    // Permisos extra asignados directamente (solo para este usuario)
+    public function directPermissions(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Permission::class,
+            'permission_user',
+            'user_id',
+            'permission_id'
+        );
+    }
+
     // Verifica si tiene un rol
     public function hasRole(string $roleName): bool
     {
         return $this->roles()->where('name', $roleName)->exists();
+    }
+
+    // Verifica si tiene al menos uno de los roles indicados
+    public function hasAnyRole(array $roleNames): bool
+    {
+        return $this->roles()->whereIn('name', $roleNames)->exists();
     }
 
     // ¿Es super admin?

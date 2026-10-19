@@ -3,6 +3,8 @@
 namespace App\Modules\Productos\Models;
 
 use App\Models\Company;
+use App\Modules\Support\Models\Concerns\BelongsToCompany;
+use Database\Factories\BrandFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,9 +12,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Brand extends Model
 {
+    use BelongsToCompany;
     use HasFactory;
 
-    protected static string $factory = \Database\Factories\BrandFactory::class;
+    protected static string $factory = BrandFactory::class;
+
     protected $fillable = [
         'company_id',
         'name',
@@ -39,10 +43,5 @@ class Brand extends Model
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
-    }
-
-    public function scopeForCompany($query, int $companyId)
-    {
-        return $query->where('company_id', $companyId);
     }
 }

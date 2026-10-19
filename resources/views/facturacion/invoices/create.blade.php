@@ -153,6 +153,8 @@
                     <input type="hidden" name="payments[0][payment_form_code]" value="1">
                     <input type="hidden" name="payments[0][payment_method_code]" value="cash">
                     <input type="hidden" name="payments[0][amount]" :value="total">
+                    <input type="hidden" name="payments[0][cash_received]" :value="total">
+                    <input type="hidden" name="payments[0][cash_change]" value="0">
                     <p class="text-sm text-muted">
                         Pago registrado en efectivo por un total de
                         <span class="font-mono font-bold text-ink" x-text="money(total)"></span>.

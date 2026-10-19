@@ -2,9 +2,28 @@
     <x-slot name="header">
         <div class="flex items-center justify-between">
             <h2 class="brutal-kicker text-lg">Productos</h2>
-            <a href="{{ route('productos.create') }}" class="brutal-button">
-                Nuevo Producto
-            </a>
+            <div class="flex items-center gap-2">
+                @if(auth()->user()->hasPermission('categorias.manage'))
+                    <a href="{{ route('productos.categorias.index') }}" class="brutal-button">
+                        Categorías
+                    </a>
+                @endif
+                @if(auth()->user()->hasPermission('marcas.manage'))
+                    <a href="{{ route('productos.marcas.index') }}" class="brutal-button">
+                        Marcas
+                    </a>
+                @endif
+                @if(auth()->user()->isSuperAdmin())
+                    <a href="{{ route('productos.impuestos.index') }}" class="brutal-button">
+                        Impuestos
+                    </a>
+                @endif
+                @if(auth()->user()->hasPermission('productos.create'))
+                    <a href="{{ route('productos.create') }}" class="brutal-button !bg-primary !text-white">
+                        Nuevo Producto
+                    </a>
+                @endif
+            </div>
         </div>
     </x-slot>
 
@@ -102,25 +121,41 @@
                             <td class="text-right">
                                 <div class="flex items-center justify-end gap-2">
                                     <a
-                                        href="{{ route('productos.edit', $product) }}"
-                                        class="brutal-button !px-3 !py-1.5 !text-[10px]"
+                                        href="{{ route('productos.show', $product) }}"
+                                        class="brutal-button !px-2.5 !py-1.5"
+                                        title="Ver"
+                                        aria-label="Ver {{ $product->name }}"
                                     >
-                                        Editar
+                                        <x-action-icon name="view" />
                                     </a>
-                                    <form
-                                        method="POST"
-                                        action="{{ route('productos.toggleActive', $product) }}"
-                                        class="inline"
+                                    <a
+                                        href="{{ route('productos.edit', $product) }}"
+                                        class="brutal-button !px-2.5 !py-1.5"
+                                        title="Editar"
+                                        aria-label="Editar {{ $product->name }}"
                                     >
-                                        @csrf
-                                        @method('PATCH')
-                                        <button
-                                            type="submit"
-                                            class="brutal-button !px-3 !py-1.5 !text-[10px] {{ $product->is_active ? '!bg-danger !text-white' : '!bg-success !text-white' }}"
-                                        >
-                                            {{ $product->is_active ? 'Desactivar' : 'Activar' }}
-                                        </button>
-                                    </form>
+                                        <x-action-icon name="edit" />
+                                    </a>
+                                    <x-confirm-dialog
+                                        name="toggle-product-{{ $product->id }}"
+                                        :title="$product->is_active ? 'Desactivar producto' : 'Activar producto'"
+                                        :message="$product->is_active ? '¿Desactivar este producto? Dejará de estar disponible para nuevas ventas.' : '¿Activar este producto para su venta?'"
+                                        :confirm-label="$product->is_active ? 'Desactivar' : 'Activar'"
+                                        :variant="$product->is_active ? 'danger' : 'success'"
+                                        action="{{ route('productos.toggleActive', $product) }}"
+                                        method="PATCH"
+                                    >
+                                        <x-slot:trigger>
+                                            <button
+                                                type="button"
+                                                class="brutal-button !px-2.5 !py-1.5 {{ $product->is_active ? '!bg-danger !text-white' : '!bg-success !text-white' }}"
+                                                title="{{ $product->is_active ? 'Desactivar' : 'Activar' }}"
+                                                aria-label="{{ $product->is_active ? 'Desactivar' : 'Activar' }} {{ $product->name }}"
+                                            >
+                                                <x-action-icon name="toggle" />
+                                            </button>
+                                        </x-slot:trigger>
+                                    </x-confirm-dialog>
                                 </div>
                             </td>
                         </tr>

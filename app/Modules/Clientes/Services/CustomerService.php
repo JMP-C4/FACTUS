@@ -15,7 +15,7 @@ class CustomerService
     /**
      * Lista clientes paginados con filtros.
      */
-    public function list(int $companyId, array $filters = []): LengthAwarePaginator
+    public function list(?int $companyId, array $filters = []): LengthAwarePaginator
     {
         $query = Customer::forCompany($companyId);
 

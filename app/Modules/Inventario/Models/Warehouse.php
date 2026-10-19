@@ -3,6 +3,8 @@
 namespace App\Modules\Inventario\Models;
 
 use App\Models\Company;
+use App\Modules\Support\Models\Concerns\BelongsToCompany;
+use Database\Factories\WarehouseFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,9 +12,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Warehouse extends Model
 {
+    use BelongsToCompany;
     use HasFactory;
 
-    protected static string $factory = \Database\Factories\WarehouseFactory::class;
+    protected static string $factory = WarehouseFactory::class;
+
     protected $fillable = [
         'company_id',
         'name',
@@ -40,11 +44,6 @@ class Warehouse extends Model
     public function movements(): HasMany
     {
         return $this->hasMany(StockMovement::class);
-    }
-
-    public function scopeForCompany($query, int $companyId)
-    {
-        return $query->where('company_id', $companyId);
     }
 
     public function scopeDefault($query)

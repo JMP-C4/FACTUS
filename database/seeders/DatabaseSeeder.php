@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use App\Modules\AccessControl\Database\Seeders\PermissionSeeder;
 use App\Modules\AccessControl\Database\Seeders\RoleSeeder;
+use App\Modules\Productos\Database\Seeders\TaxSeeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -26,6 +27,7 @@ class DatabaseSeeder extends Seeder
 
         // Paso 3: Datos locales de demostración (compañía, sucursal, usuarios,
         // catálogo, clientes, stock y rango de numeración).
+        $this->call(TaxSeeder::class);
         $this->call(DemoSeeder::class);
 
         // Paso 4: Usuario de prueba (no duplica si ya existe)

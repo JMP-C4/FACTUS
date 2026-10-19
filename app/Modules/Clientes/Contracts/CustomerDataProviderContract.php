@@ -9,7 +9,7 @@ interface CustomerDataProviderContract
     /**
      * Busca clientes por término de búsqueda.
      */
-    public function search(int $companyId, string $term): Collection;
+    public function search(?int $companyId, string $term): Collection;
 
     /**
      * Obtiene datos de un cliente para facturación.
@@ -19,7 +19,7 @@ interface CustomerDataProviderContract
     /**
      * Obtiene clientes facturables de una compañía.
      */
-    public function getFacturable(int $companyId): Collection;
+    public function getFacturable(?int $companyId): Collection;
 
     /**
      * Verifica si un cliente tiene datos completos para facturación.

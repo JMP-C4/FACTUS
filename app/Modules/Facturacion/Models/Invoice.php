@@ -9,12 +9,15 @@ use App\Models\Company;
 use App\Models\User;
 use App\Modules\Clientes\Models\Customer;
 use App\Modules\Facturacion\Enums\InvoiceStatus;
+use App\Modules\Support\Models\Concerns\BelongsToCompany;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 final class Invoice extends Model
 {
+    use BelongsToCompany;
+
     protected $fillable = [
         'company_id',
         'branch_id',
@@ -87,14 +90,9 @@ final class Invoice extends Model
         return $this->hasMany(InvoicePayment::class);
     }
 
-    public function billingLogs()
+    public function creditNotes(): HasMany
     {
-        return $this->morphMany(BillingLog::class, 'loggable');
-    }
-
-    public function scopeForCompany($query, int $companyId)
-    {
-        return $query->where('company_id', $companyId);
+        return $this->hasMany(CreditNote::class);
     }
 
     public function scopeByStatus($query, string $status)
@@ -105,10 +103,5 @@ final class Invoice extends Model
     public function isDraft(): bool
     {
         return $this->status === InvoiceStatus::Draft;
-    }
-
-    public function isIssued(): bool
-    {
-        return $this->status === InvoiceStatus::Issued;
     }
 }

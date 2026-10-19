@@ -27,9 +27,16 @@ class InventoryMovementGateway implements InventoryMovementGatewayContract
         });
     }
 
-    public function exit(int $warehouseId, int $productId, int $quantity, ?string $reason = null, ?int $performedBy = null): void
-    {
-        DB::transaction(function () use ($warehouseId, $productId, $quantity, $reason, $performedBy): void {
+    public function exit(
+        int $warehouseId,
+        int $productId,
+        int $quantity,
+        ?string $reason = null,
+        ?int $performedBy = null,
+        ?string $referenceType = null,
+        ?int $referenceId = null,
+    ): void {
+        DB::transaction(function () use ($warehouseId, $productId, $quantity, $reason, $performedBy, $referenceType, $referenceId): void {
             $stock = Stock::where('warehouse_id', $warehouseId)
                 ->where('product_id', $productId)
                 ->first();
@@ -47,6 +54,8 @@ class InventoryMovementGateway implements InventoryMovementGatewayContract
                 'quantity' => -$quantity,
                 'reason' => $reason,
                 'performed_by' => $performedBy,
+                'reference_type' => $referenceType,
+                'reference_id' => $referenceId,
             ]);
         });
     }

@@ -3,12 +3,15 @@
 namespace App\Modules\Facturacion\Models;
 
 use App\Models\Company;
+use App\Modules\Support\Models\Concerns\BelongsToCompany;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class BillingLog extends Model
 {
+    use BelongsToCompany;
+
     protected $table = 'billing_logs';
 
     protected $fillable = [
@@ -42,11 +45,6 @@ class BillingLog extends Model
     public function loggable(): MorphTo
     {
         return $this->morphTo();
-    }
-
-    public function scopeForCompany($query, int $companyId)
-    {
-        return $query->where('company_id', $companyId);
     }
 
     public function scopeByStatus($query, string $status)

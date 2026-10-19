@@ -17,38 +17,15 @@ class InventoryService
     /**
      * Lista almacenes de una compañía.
      */
-    public function getWarehouses(int $companyId): Collection
+    public function getWarehouses(?int $companyId): Collection
     {
         return Warehouse::forCompany($companyId)->orderBy('name')->get();
     }
 
     /**
-     * Lista stocks con paginación y filtros.
-     */
-    public function listStocks(int $companyId, array $filters = []): LengthAwarePaginator
-    {
-        $query = Stock::whereHas('warehouse', fn ($q) => $q->where('company_id', $companyId))
-            ->with(['product', 'warehouse']);
-
-        if (! empty($filters['warehouse_id'])) {
-            $query->where('warehouse_id', $filters['warehouse_id']);
-        }
-
-        if (! empty($filters['search'])) {
-            $query->whereHas('product', fn ($q) => $q->where('name', 'like', "%{$filters['search']}%"));
-        }
-
-        if (! empty($filters['low_stock'])) {
-            $query->whereColumn('quantity', '<=', 'minimum_stock_snapshot');
-        }
-
-        return $query->orderBy('quantity')->paginate(15);
-    }
-
-    /**
      * Lista movimientos con paginación y filtros.
      */
-    public function listMovements(int $companyId, array $filters = []): LengthAwarePaginator
+    public function listMovements(?int $companyId, array $filters = []): LengthAwarePaginator
     {
         $query = StockMovement::forCompany($companyId)
             ->with(['product', 'warehouse', 'performer']);
@@ -89,9 +66,10 @@ class InventoryService
     /**
      * Obtiene alertas de stock mínimo.
      */
-    public function getLowStockAlerts(int $companyId): Collection
+    public function getLowStockAlerts(?int $companyId): Collection
     {
-        return Stock::whereHas('warehouse', fn ($q) => $q->where('company_id', $companyId))
+        return Stock::query()
+            ->when($companyId !== null, fn ($q) => $q->whereHas('warehouse', fn ($w) => $w->where('company_id', $companyId)))
             ->whereColumn('quantity', '<=', 'minimum_stock_snapshot')
             ->with(['product', 'warehouse'])
             ->get();

@@ -3,37 +3,38 @@
         <div class="flex items-center justify-between">
             <h2 class="brutal-kicker text-lg">Factura {{ $invoice->invoice_number }}</h2>
             <div class="flex items-center gap-2">
+                <a href="{{ route('facturacion.facturas.pdf', $invoice) }}" class="brutal-button">
+                    Descargar PDF
+                </a>
                 @if($invoice->isDraft())
-                    <form
-                        method="POST"
+                    <x-confirm-dialog
+                        name="issue-invoice-{{ $invoice->id }}"
+                        title="Emitir factura"
+                        message="¿Emitir esta factura? Se le asignará la numeración definitiva."
+                        confirm-label="Emitir Factura"
+                        variant="success"
                         action="{{ route('facturacion.facturas.issue', $invoice) }}"
-                        class="inline"
+                        method="POST"
                     >
-                        @csrf
-                        <button
-                            type="submit"
-                            class="brutal-button !bg-success !text-white"
-                            onclick="return confirm('¿Emitir esta factura?')"
-                        >
-                            Emitir Factura
-                        </button>
-                    </form>
+                        <x-slot:trigger>
+                            <button type="button" class="brutal-button !bg-success !text-white">Emitir Factura</button>
+                        </x-slot:trigger>
+                    </x-confirm-dialog>
                 @endif
                 @if($invoice->status->isCancellable())
-                    <form
-                        method="POST"
+                    <x-confirm-dialog
+                        name="cancel-invoice-{{ $invoice->id }}"
+                        title="Anular factura"
+                        message="¿Anular esta factura? Esta acción es irreversible."
+                        confirm-label="Anular"
+                        variant="danger"
                         action="{{ route('facturacion.facturas.cancel', $invoice) }}"
-                        class="inline"
+                        method="POST"
                     >
-                        @csrf
-                        <button
-                            type="submit"
-                            class="brutal-button !bg-danger !text-white"
-                            onclick="return confirm('¿Anular esta factura?')"
-                        >
-                            Anular
-                        </button>
-                    </form>
+                        <x-slot:trigger>
+                            <button type="button" class="brutal-button !bg-danger !text-white">Anular</button>
+                        </x-slot:trigger>
+                    </x-confirm-dialog>
                 @endif
                 <a href="{{ route('facturacion.facturas.index') }}" class="brutal-button">
                     Volver
@@ -169,25 +170,101 @@
                 </div>
             </div>
 
+            {{-- Notas de crédito --}}
+            @php
+                $hasAppliedCreditNote = $invoice->creditNotes->contains(fn ($note) => $note->status->isApplied());
+                $isCreditEligible = in_array($invoice->status->value, ['issued', 'validated'], true) && ! $hasAppliedCreditNote;
+            @endphp
+            @if($invoice->creditNotes->isNotEmpty() || $isCreditEligible)
+                <div>
+                    <h4 class="brutal-kicker mb-3 text-xs">Notas de crédito</h4>
+
+                    @if($invoice->creditNotes->isNotEmpty())
+                        <div class="overflow-x-auto">
+                            <table class="brutal-table">
+                                <thead>
+                                    <tr>
+                                        <th>Número</th>
+                                        <th>Concepto</th>
+                                        <th>Total</th>
+                                        <th>Estado</th>
+                                        <th>Fecha</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($invoice->creditNotes as $note)
+                                        <tr>
+                                            <td class="font-mono font-bold">{{ $note->number ?? '—' }}</td>
+                                            <td class="text-sm">{{ $note->reason ?? '—' }}</td>
+                                            <td class="font-mono">${{ number_format($note->total, 2, ',', '.') }}</td>
+                                            <td>
+                                                <span class="brutal-badge bg-{{ $note->status->color() }} text-{{ in_array($note->status->value, ['draft', 'pending']) ? 'ink' : 'white' }}">
+                                                    {{ $note->status->label() }}
+                                                </span>
+                                            </td>
+                                            <td class="text-xs">{{ $note->issued_at?->format('d/m/Y H:i') ?? $note->created_at->format('d/m/Y H:i') }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @endif
+
+                    @if($isCreditEligible && auth()->user()->hasPermission('facturacion.nota_credito'))
+                        <form
+                            method="POST"
+                            action="{{ route('facturacion.notas.store', $invoice) }}"
+                            class="mt-4 space-y-3"
+                        >
+                            @csrf
+                            <div class="grid gap-3 sm:grid-cols-2">
+                                <div>
+                                    <label class="brutal-label text-[10px]">Concepto de corrección</label>
+                                    <select name="correction_concept_code" class="brutal-input" required>
+                                        <option value="">Selecciona…</option>
+                                        <option value="1">1 - Devolución de mercancía</option>
+                                        <option value="2">2 - Anulación de factura</option>
+                                        <option value="3">3 - Ajuste por descuento</option>
+                                        <option value="4">4 - Ajuste por error</option>
+                                        <option value="5">5 - Otro</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="brutal-label text-[10px]">Motivo</label>
+                                    <input type="text" name="reason" class="brutal-input" maxlength="1000" required>
+                                </div>
+                            </div>
+                            <button type="submit" class="brutal-button !bg-accent !text-ink">
+                                Emitir nota de crédito
+                            </button>
+                        </form>
+                    @endif
+                </div>
+            @endif
+
             {{-- Datos de facturación local --}}
             @if($invoice->cufe || $invoice->qr_url)
                 <div>
                     <h4 class="brutal-kicker mb-3 text-xs">Facturación local</h4>
-                    <div class="grid gap-4 sm:grid-cols-2">
-                        @if($invoice->cufe)
-                            <div>
-                                <span class="brutal-label text-[10px] text-muted">CUFE</span>
-                                <p class="font-mono text-xs break-all">{{ $invoice->cufe }}</p>
-                            </div>
-                        @endif
-                        @if($invoice->qr_url)
-                            <div>
-                                <span class="brutal-label text-[10px] text-muted">Enlace de verificación</span>
-                                <a href="{{ $invoice->qr_url }}" class="font-mono text-xs break-all underline text-primary" target="_blank" rel="noopener">
-                                    {{ $invoice->qr_url }}
-                                </a>
-                            </div>
-                        @endif
+                    <div class="grid gap-6 sm:grid-cols-[auto_1fr] sm:items-center">
+                        <x-document-codes :invoice="$invoice" :qr-size="140" :barcode-height="56" />
+
+                        <div class="space-y-4">
+                            @if($invoice->cufe)
+                                <div>
+                                    <span class="brutal-label text-[10px] text-muted">CUFE</span>
+                                    <p class="font-mono text-xs break-all">{{ $invoice->cufe }}</p>
+                                </div>
+                            @endif
+                            @if($invoice->qr_url)
+                                <div>
+                                    <span class="brutal-label text-[10px] text-muted">Enlace de verificación</span>
+                                    <a href="{{ $invoice->qr_url }}" class="font-mono text-xs break-all underline text-primary" target="_blank" rel="noopener">
+                                        {{ $invoice->qr_url }}
+                                    </a>
+                                </div>
+                            @endif
+                        </div>
                     </div>
                 </div>
             @endif

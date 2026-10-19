@@ -15,6 +15,7 @@ class ProductTest extends TestCase
     use HasRoles;
 
     private Company $company;
+
     private User $user;
 
     protected function setUp(): void

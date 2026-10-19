@@ -5,10 +5,10 @@ namespace Tests\Feature\Inventario;
 use App\Models\Company;
 use App\Models\User;
 use App\Modules\Inventario\Models\Stock;
-use App\Modules\Inventario\Models\StockMovement;
 use App\Modules\Inventario\Models\Warehouse;
 use App\Modules\Inventario\Services\InventoryMovementGateway;
 use App\Modules\Productos\Models\Product;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Tests\Support\HasRoles;
 use Tests\TestCase;
 
@@ -17,8 +17,11 @@ class InventoryTest extends TestCase
     use HasRoles;
 
     private Company $company;
+
     private User $user;
+
     private Warehouse $warehouse;
+
     private Product $product;
 
     protected function setUp(): void
@@ -215,7 +218,7 @@ class InventoryTest extends TestCase
 
         $gateway = app(InventoryMovementGateway::class);
 
-        $this->expectException(\Symfony\Component\HttpKernel\Exception\HttpException::class);
+        $this->expectException(HttpException::class);
 
         $gateway->exit(
             $this->warehouse->id,

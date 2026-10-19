@@ -8,7 +8,7 @@ use Illuminate\Support\Collection;
 
 class CustomerDataProvider implements CustomerDataProviderContract
 {
-    public function search(int $companyId, string $term): Collection
+    public function search(?int $companyId, string $term): Collection
     {
         return Customer::forCompany($companyId)
             ->search($term)
@@ -44,7 +44,7 @@ class CustomerDataProvider implements CustomerDataProviderContract
         ]);
     }
 
-    public function getFacturable(int $companyId): Collection
+    public function getFacturable(?int $companyId): Collection
     {
         return Customer::forCompany($companyId)
             ->facturable()

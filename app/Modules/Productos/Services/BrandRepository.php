@@ -8,7 +8,7 @@ use Illuminate\Support\Collection;
 
 class BrandRepository implements BrandRepositoryContract
 {
-    public function getActive(int $companyId): Collection
+    public function getActive(?int $companyId): Collection
     {
         return Brand::forCompany($companyId)
             ->active()

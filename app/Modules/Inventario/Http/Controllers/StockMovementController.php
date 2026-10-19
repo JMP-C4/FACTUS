@@ -50,8 +50,14 @@ class StockMovementController extends Controller
      */
     public function storeEntry(StoreStockEntryRequest $request): RedirectResponse
     {
+        $companyId = $this->currentCompanyId($request);
+
+        if ($companyId === null) {
+            return back()->with('error', 'Debes pertenecer a una compañía para registrar entradas de stock.');
+        }
+
         $this->inventoryService->registerEntry(
-            companyId: $request->user()->company_id,
+            companyId: $companyId,
             warehouseId: $request->input('warehouse_id'),
             productId: $request->input('product_id'),
             quantity: $request->input('quantity'),
@@ -80,8 +86,14 @@ class StockMovementController extends Controller
      */
     public function storeAdjustment(StoreStockAdjustmentRequest $request): RedirectResponse
     {
+        $companyId = $this->currentCompanyId($request);
+
+        if ($companyId === null) {
+            return back()->with('error', 'Debes pertenecer a una compañía para registrar ajustes de stock.');
+        }
+
         $this->inventoryService->registerAdjustment(
-            companyId: $request->user()->company_id,
+            companyId: $companyId,
             warehouseId: $request->input('warehouse_id'),
             productId: $request->input('product_id'),
             newQuantity: $request->input('new_quantity'),

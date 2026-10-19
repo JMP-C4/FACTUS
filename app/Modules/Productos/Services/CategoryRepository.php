@@ -8,7 +8,7 @@ use Illuminate\Support\Collection;
 
 class CategoryRepository implements CategoryRepositoryContract
 {
-    public function getActive(int $companyId): Collection
+    public function getActive(?int $companyId): Collection
     {
         return Category::forCompany($companyId)
             ->active()

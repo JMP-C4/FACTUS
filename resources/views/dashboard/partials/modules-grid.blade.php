@@ -2,18 +2,17 @@
     'modules' => [],
 ])
 
-{{-- Grid de módulos funcionales del super admin.
-     Cada bloque se pinta desde el arreglo recibido para no hardcodear el diseño en el dashboard raíz. --}}
-<section class="grid gap-5 lg:grid-cols-2">
+{{-- Bento de módulos funcionales.
+     Rejilla densa y homogénea para escanear rápido el estado de cada área. --}}
+<section class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
     @foreach ($modules as $module)
-        <div id="{{ $module['id'] }}" class="{{ $module['span'] ?? '' }}">
-            @include('dashboard.partials.module-card', [
-                'title' => $module['title'],
-                'description' => $module['description'],
-                'metric' => $module['metric'],
-                'status' => $module['status'],
-                'tone' => $module['tone'],
-            ])
-        </div>
+        @include('dashboard.partials.module-card', [
+            'title' => $module['title'],
+            'description' => $module['description'],
+            'metric' => $module['metric'],
+            'status' => $module['status'],
+            'tone' => $module['tone'],
+            'url' => $module['url'] ?? null,
+        ])
     @endforeach
 </section>

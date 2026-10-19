@@ -2,11 +2,18 @@
     <x-slot name="header">
         <div class="flex items-center justify-between">
             <h2 class="brutal-kicker text-lg">Facturas</h2>
-            @if(auth()->user()->hasPermission('facturacion.emitir'))
-                <a href="{{ route('facturacion.facturas.create') }}" class="brutal-button !bg-primary !text-white">
-                    Nueva Factura
-                </a>
-            @endif
+            <div class="flex items-center gap-2">
+                @if(auth()->user()->hasPermission('facturacion.view'))
+                    <a href="{{ route('facturacion.notas.index') }}" class="brutal-button">
+                        Notas de crédito
+                    </a>
+                @endif
+                @if(auth()->user()->hasPermission('facturacion.emitir'))
+                    <a href="{{ route('facturacion.facturas.create') }}" class="brutal-button !bg-primary !text-white">
+                        Nueva Factura
+                    </a>
+                @endif
+            </div>
         </div>
     </x-slot>
 
@@ -68,25 +75,41 @@
                                 <div class="flex items-center justify-end gap-2">
                                     <a
                                         href="{{ route('facturacion.facturas.show', $invoice) }}"
-                                        class="brutal-button !px-3 !py-1.5 !text-[10px]"
+                                        class="brutal-button !px-2.5 !py-1.5"
+                                        title="Ver"
+                                        aria-label="Ver factura {{ $invoice->invoice_number }}"
                                     >
-                                        Ver
+                                        <x-action-icon name="view" />
+                                    </a>
+                                    <a
+                                        href="{{ route('facturacion.facturas.pdf', $invoice) }}"
+                                        class="brutal-button !px-2.5 !py-1.5"
+                                        title="Descargar PDF"
+                                        aria-label="Descargar PDF de {{ $invoice->invoice_number }}"
+                                    >
+                                        <x-action-icon name="download" />
                                     </a>
                                     @if($invoice->isDraft())
-                                        <form
-                                            method="POST"
+                                        <x-confirm-dialog
+                                            name="issue-invoice-{{ $invoice->id }}"
+                                            title="Emitir factura"
+                                            message="¿Emitir esta factura? Se le asignará la numeración definitiva."
+                                            confirm-label="Emitir"
+                                            variant="success"
                                             action="{{ route('facturacion.facturas.issue', $invoice) }}"
-                                            class="inline"
+                                            method="POST"
                                         >
-                                            @csrf
-                                            <button
-                                                type="submit"
-                                                class="brutal-button !px-3 !py-1.5 !text-[10px] !bg-success !text-white"
-                                                onclick="return confirm('¿Emitir esta factura?')"
-                                            >
-                                                Emitir
-                                            </button>
-                                        </form>
+                                            <x-slot:trigger>
+                                                <button
+                                                    type="button"
+                                                    class="brutal-button !bg-success !px-2.5 !py-1.5 !text-white"
+                                                    title="Emitir"
+                                                    aria-label="Emitir factura {{ $invoice->invoice_number }}"
+                                                >
+                                                    <x-action-icon name="issue" />
+                                                </button>
+                                            </x-slot:trigger>
+                                        </x-confirm-dialog>
                                     @endif
                                 </div>
                             </td>

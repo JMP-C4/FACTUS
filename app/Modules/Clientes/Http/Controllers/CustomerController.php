@@ -27,7 +27,7 @@ class CustomerController extends Controller
 
         $customers = $this->customerService->list($companyId, [
             'search' => $request->input('search'),
-            'is_facturable' => $request->boolean('is_facturable'),
+            'is_facturable' => $request->has('is_facturable') ? $request->boolean('is_facturable') : null,
         ]);
 
         return view('clientes::index', compact('customers'));
@@ -46,7 +46,11 @@ class CustomerController extends Controller
      */
     public function store(StoreCustomerRequest $request): RedirectResponse
     {
-        $companyId = $request->user()->company_id;
+        $companyId = $this->currentCompanyId($request);
+
+        if ($companyId === null) {
+            return back()->with('error', 'Debes pertenecer a una compañía para crear clientes.');
+        }
 
         $this->customerService->create($companyId, $request->validated());
 
@@ -133,8 +137,10 @@ class CustomerController extends Controller
      */
     private function authorizeCustomer(Customer $customer, Request $request): void
     {
+        $companyId = $request->user()->company_id;
+
         abort_if(
-            $customer->company_id !== $request->user()->company_id,
+            $companyId !== null && $customer->company_id !== $companyId,
             403,
             'No tienes acceso a este cliente.'
         );

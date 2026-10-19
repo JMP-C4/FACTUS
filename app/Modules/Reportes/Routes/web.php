@@ -12,8 +12,16 @@ Route::middleware(['web', 'auth'])
             ->middleware('permission:reportes.ventas')
             ->name('ventas.index');
 
+        Route::get('/ventas/exportar', [ReportesController::class, 'exportVentas'])
+            ->middleware('permission:reportes.exportar')
+            ->name('ventas.export');
+
         // Reporte de inventario.
         Route::get('/inventario', [ReportesController::class, 'inventario'])
             ->middleware('permission:reportes.inventario')
             ->name('inventario.index');
+
+        Route::get('/inventario/exportar', [ReportesController::class, 'exportInventario'])
+            ->middleware('permission:reportes.exportar')
+            ->name('inventario.export');
     });

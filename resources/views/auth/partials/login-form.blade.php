@@ -161,7 +161,7 @@
                 @enderror
             </div>
 
-            <div class="group relative">
+            <div class="group relative" x-data="{ showPassword: false }">
                 <label
                     for="password"
                     class="mb-1 block text-xs font-bold uppercase tracking-[0.25em] text-[var(--color-text-soft)]"
@@ -187,7 +187,7 @@
                     </div>
 
                     <input
-                        type="password"
+                        :type="showPassword ? 'text' : 'password'"
                         id="password"
                         name="password"
                         class="block
@@ -197,6 +197,7 @@
                             bg-[var(--color-surface)]
                             p-3.5
                             pl-10
+                            pr-11
                             text-sm
                             font-medium
                             text-[var(--color-text)]
@@ -210,6 +211,24 @@
                         required
                         autocomplete="current-password"
                     />
+
+                    <button
+                        type="button"
+                        @click="showPassword = ! showPassword"
+                        class="absolute inset-y-0 right-0 flex items-center pr-3 text-[var(--color-secondary)] transition-colors hover:text-[var(--color-primary)]"
+                        :aria-label="showPassword ? 'Ocultar contrasena' : 'Mostrar contrasena'"
+                        :title="showPassword ? 'Ocultar contrasena' : 'Mostrar contrasena'"
+                        tabindex="-1"
+                    >
+                        <svg x-show="! showPassword" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z" />
+                            <circle cx="12" cy="12" r="3" />
+                        </svg>
+                        <svg x-show="showPassword" x-cloak class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-6.5 0-10-8-10-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c6.5 0 10 8 10 8a18.5 18.5 0 0 1-2.16 3.19M14.12 14.12a3 3 0 1 1-4.24-4.24" />
+                            <path d="M1 1l22 22" />
+                        </svg>
+                    </button>
 
                     <div
                         class="absolute left-0 top-0 -z-10 h-full w-full translate-x-1.5 translate-y-1.5 border-2 border-transparent bg-[var(--color-surface-muted)] transition-transform group-focus-within:translate-x-2.5 group-focus-within:translate-y-2.5"

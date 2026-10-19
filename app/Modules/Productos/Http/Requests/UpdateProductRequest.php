@@ -42,6 +42,7 @@ class UpdateProductRequest extends FormRequest
             'unit_measure_code' => ['sometimes', 'required', 'string', 'max:10'],
             'standard_code' => ['nullable', 'string', 'max:10'],
             'price' => ['sometimes', 'required', 'numeric', 'min:0', 'max:9999999999.99'],
+            'tax_id' => ['nullable', 'integer', 'exists:taxes,id'],
             'tax_rate' => ['sometimes', 'required', 'numeric', 'min:0', 'max:100'],
             'minimum_stock' => ['sometimes', 'required', 'integer', 'min:0'],
             'is_active' => ['boolean'],

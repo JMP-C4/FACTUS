@@ -3,11 +3,14 @@
 namespace App\Modules\Clientes\Models;
 
 use App\Models\Company;
+use App\Modules\Support\Models\Concerns\BelongsToCompany;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Customer extends Model
 {
+    use BelongsToCompany;
+
     protected $fillable = [
         'company_id',
         'identification_document_code',
@@ -35,11 +38,6 @@ class Customer extends Model
     public function company(): BelongsTo
     {
         return $this->belongsTo(Company::class);
-    }
-
-    public function scopeForCompany($query, int $companyId)
-    {
-        return $query->where('company_id', $companyId);
     }
 
     public function scopeSearch($query, string $term)

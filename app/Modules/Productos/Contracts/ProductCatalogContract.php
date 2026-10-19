@@ -9,12 +9,12 @@ interface ProductCatalogContract
     /**
      * Busca productos activos por término de búsqueda.
      */
-    public function search(int $companyId, string $term): Collection;
+    public function search(?int $companyId, string $term): Collection;
 
     /**
      * Busca un producto por código de barras.
      */
-    public function findByBarcode(int $companyId, string $barcode): ?object;
+    public function findByBarcode(?int $companyId, string $barcode): ?object;
 
     /**
      * Obtiene datos de un producto para facturación.
@@ -24,5 +24,5 @@ interface ProductCatalogContract
     /**
      * Obtiene productos activos de una compañía.
      */
-    public function getActive(int $companyId): Collection;
+    public function getActive(?int $companyId): Collection;
 }

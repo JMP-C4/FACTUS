@@ -6,8 +6,7 @@
 ])
 
 @php
-    // Elegimos sombra por tono para que la tarjeta pueda reutilizarse
-    // en varios dashboards sin duplicar clases manuales.
+    // Sombra por tono para diferenciar los KPIs sin romper el estilo brutalista.
     $shadowClass = match ($tone) {
         'amber' => 'shadow-brutal-amber',
         'black' => 'shadow-brutal-black',
@@ -15,13 +14,13 @@
     };
 @endphp
 
-<article class="brutal-stat {{ $shadowClass }}">
-    <div class="space-y-3">
-        <p class="brutal-kicker text-[var(--color-text-soft)]">{{ $label }}</p>
-        <p class="font-display text-4xl font-black uppercase leading-none">{{ $value }}</p>
+<article class="brutal-stat {{ $shadowClass }} !min-h-0">
+    <div class="space-y-1.5">
+        <p class="brutal-kicker text-[10px] text-[var(--color-text-soft)]">{{ $label }}</p>
+        <p class="font-display text-3xl font-black uppercase leading-none">{{ $value }}</p>
     </div>
 
-    <p class="max-w-[18rem] text-sm leading-6 text-[var(--color-text-muted)]">
+    <p class="mt-3 text-xs leading-5 text-[var(--color-text-muted)]">
         {{ $caption }}
     </p>
 </article>

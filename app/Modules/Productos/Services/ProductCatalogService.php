@@ -8,7 +8,7 @@ use Illuminate\Support\Collection;
 
 class ProductCatalogService implements ProductCatalogContract
 {
-    public function search(int $companyId, string $term): Collection
+    public function search(?int $companyId, string $term): Collection
     {
         return Product::forCompany($companyId)
             ->active()
@@ -18,7 +18,7 @@ class ProductCatalogService implements ProductCatalogContract
             ->get();
     }
 
-    public function findByBarcode(int $companyId, string $barcode): ?object
+    public function findByBarcode(?int $companyId, string $barcode): ?object
     {
         $product = Product::forCompany($companyId)
             ->active()
@@ -62,7 +62,7 @@ class ProductCatalogService implements ProductCatalogContract
         ]) : null;
     }
 
-    public function getActive(int $companyId): Collection
+    public function getActive(?int $companyId): Collection
     {
         return Product::forCompany($companyId)
             ->active()

@@ -13,24 +13,59 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+        <style>[x-cloak] { display: none !important; }</style>
+
+        {{-- Aplica el tema antes del primer render para evitar parpadeo. --}}
+        <script>
+            (function () {
+                try {
+                    const stored = localStorage.getItem('factus.theme');
+                    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    if (stored === 'dark' || (! stored && prefersDark)) {
+                        document.documentElement.classList.add('dark');
+                    }
+                } catch (e) {}
+            })();
+        </script>
     </head>
     <body class="font-sans antialiased">
-        <div class="min-h-screen bg-bg text-ink">
-            @include('layouts.navigation')
+        <div
+            x-data="{
+                sidebarOpen: false,
+                sidebarCollapsed: localStorage.getItem('factus.sidebar.collapsed') === 'true',
+                toggleSidebarCollapsed() {
+                    this.sidebarCollapsed = !this.sidebarCollapsed;
+                    localStorage.setItem('factus.sidebar.collapsed', this.sidebarCollapsed ? 'true' : 'false');
+                },
+            }"
+            class="min-h-screen bg-bg text-ink"
+        >
+            @include('layouts.sidebar')
 
-            <!-- Page Heading -->
-            @isset($header)
-                <header class="border-b-[3px] border-black bg-surface">
-                    <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-                        {{ $header }}
-                    </div>
-                </header>
-            @endisset
+            <div class="transition-[padding] duration-200 ease-out" :class="sidebarCollapsed ? 'lg:pl-20' : 'lg:pl-72'">
+                @include('layouts.navigation')
 
-            <!-- Page Content -->
-            <main>
-                {{ $slot }}
-            </main>
+                <!-- Page Heading -->
+                @isset($header)
+                    <header class="border-b-[3px] border-black bg-surface">
+                        <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+                            {{ $header }}
+                        </div>
+                    </header>
+                @endisset
+
+                <!-- Banners de sesión (errores/advertencias) -->
+                <x-feedback.flash />
+
+                <!-- Page Content -->
+                <main class="brutal-page">
+                    {{ $slot }}
+                </main>
+            </div>
         </div>
+
+        <!-- Toasts globales (avisos no bloqueantes) -->
+        <x-feedback.toast-host />
     </body>
 </html>

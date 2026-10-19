@@ -8,7 +8,7 @@ use Illuminate\Support\Collection;
 
 class CustomerRepository implements CustomerRepositoryContract
 {
-    public function search(int $companyId, string $term): Collection
+    public function search(?int $companyId, string $term): Collection
     {
         return Customer::forCompany($companyId)
             ->search($term)

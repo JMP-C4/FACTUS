@@ -6,6 +6,7 @@ namespace App\Modules\Facturacion\Services;
 
 use App\Modules\Facturacion\Contracts\BillingGatewayContract;
 use App\Modules\Facturacion\Models\BillingLog;
+use App\Modules\Facturacion\Models\CreditNote;
 use App\Modules\Facturacion\Models\Invoice;
 use Illuminate\Support\Str;
 
@@ -27,7 +28,7 @@ final class LocalBillingService implements BillingGatewayContract
         $invoice->loadMissing(['items', 'customer', 'numberingRange', 'company']);
 
         return [
-            'document' => '01',
+            'document' => config('billing.document_codes.invoice'),
             'reference_code' => $invoice->invoice_number,
             'prefix' => $invoice->numberingRange?->prefix ?? config('billing.prefix', 'FAC'),
             'issuer' => [
@@ -109,6 +110,64 @@ final class LocalBillingService implements BillingGatewayContract
         return $response;
     }
 
+    public function buildCreditNotePayload(Invoice $invoice, string $correctionConceptCode, ?string $reason = null): array
+    {
+        $invoice->loadMissing(['items', 'customer', 'numberingRange', 'company']);
+
+        return [
+            'document' => config('billing.document_codes.credit_note'),
+            'reference_code' => $invoice->invoice_number,
+            'correction_concept_code' => $correctionConceptCode,
+            'reason' => $reason,
+            'issuer' => [
+                'name' => $invoice->company?->name ?? config('billing.issuer_name', 'FACTUS'),
+                'identification' => $invoice->company?->nit ?? null,
+            ],
+            'customer' => $this->buildCustomer($invoice->customer),
+            'items' => $this->buildItems($invoice->items),
+            'subtotal' => (float) $invoice->subtotal,
+            'discount_total' => (float) $invoice->discount_total,
+            'tax_total' => (float) $invoice->tax_total,
+            'total' => (float) $invoice->total,
+        ];
+    }
+
+    public function issueCreditNote(int $companyId, array $payload, ?int $creditNoteId = null): array
+    {
+        $reference = (string) ($payload['reference_code'] ?? 'NC');
+        $cufe = Str::uuid()->toString().Str::random(8);
+
+        $bill = [
+            'document' => config('billing.document_codes.credit_note'),
+            'reference_code' => $reference,
+            'credit_note_number' => 'NC-'.$reference,
+            'cufe' => $cufe,
+            'qr' => config('app.url').'/facturacion/verificar/'.$cufe,
+            'status' => 1,
+            'environment' => config('billing.environment', 'local'),
+            'driver' => $this->driver(),
+            'correction_concept_code' => $payload['correction_concept_code'] ?? null,
+            'reason' => $payload['reason'] ?? null,
+            'total' => $payload['total'] ?? null,
+            'validated_at' => now()->toIso8601String(),
+        ];
+
+        $response = ['data' => ['bill' => $bill]];
+
+        $this->log(
+            $companyId,
+            $creditNoteId,
+            '/local/credit-notes/validate',
+            'POST',
+            $payload,
+            $response,
+            201,
+            CreditNote::class,
+        );
+
+        return $response;
+    }
+
     private function buildCustomer(?object $customer): ?array
     {
         if ($customer === null) {
@@ -135,7 +194,7 @@ final class LocalBillingService implements BillingGatewayContract
             'discount_total' => (float) $item->discount_total,
             'tax_total' => (float) $item->tax_total,
             'line_total' => (float) $item->line_total,
-            'unit_measure_code' => $item->unit_measure_code ?? '94',
+            'unit_measure_code' => $item->unit_measure_code ?? config('billing.default_unit_measure_code'),
         ])->toArray();
     }
 
@@ -147,10 +206,11 @@ final class LocalBillingService implements BillingGatewayContract
         array $payload,
         array $response,
         int $httpStatus,
+        string $loggableType = Invoice::class,
     ): void {
         BillingLog::create([
             'company_id' => $companyId,
-            'loggable_type' => $loggableId ? Invoice::class : null,
+            'loggable_type' => $loggableId ? $loggableType : null,
             'loggable_id' => $loggableId,
             'endpoint' => $endpoint,
             'http_method' => $method,

@@ -24,20 +24,26 @@
                     <th>Estado</th>
                 </tr>
             </thead>
-            <tbody>
-                @foreach ($logRows as $row)
-                    <tr>
-                        <td class="font-semibold">{{ $row['event'] }}</td>
-                        <td>{{ $row['owner'] }}</td>
-                        <td>{{ $row['context'] }}</td>
-                        <td>
-                            <span class="brutal-badge bg-[rgba(37,99,235,0.12)]">
-                                {{ $row['status'] }}
-                            </span>
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
+        <tbody>
+            @forelse ($logRows as $logRow)
+                <tr>
+                    <td class="font-semibold">{{ $logRow['event'] }}</td>
+                    <td>{{ $logRow['owner'] }}</td>
+                    <td>{{ $logRow['context'] }}</td>
+                    <td>
+                        <span class="brutal-badge {{ $logRow['status'] === 'Failed' ? 'bg-[rgba(220,38,38,0.18)]' : 'bg-[rgba(22,163,74,0.18)]' }}">
+                            {{ $logRow['status'] }}
+                        </span>
+                    </td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="4" class="py-6 text-center text-sm text-[var(--color-text-muted)]">
+                        Aún no hay actividad registrada.
+                    </td>
+                </tr>
+            @endforelse
+        </tbody>
         </table>
     </div>
 </div>

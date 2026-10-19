@@ -3,6 +3,7 @@
 namespace App\Modules\Productos\Services;
 
 use App\Modules\Productos\Contracts\ProductCatalogContract;
+use App\Modules\Productos\Contracts\TaxRepositoryContract;
 use App\Modules\Productos\Models\Product;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
@@ -14,12 +15,13 @@ class ProductService
         private readonly CategoryRepository $categoryRepository,
         private readonly BrandRepository $brandRepository,
         private readonly ProductCatalogContract $catalogContract,
+        private readonly TaxRepositoryContract $taxRepository,
     ) {}
 
     /**
      * Lista productos paginados con filtros.
      */
-    public function list(int $companyId, array $filters = []): LengthAwarePaginator
+    public function list(?int $companyId, array $filters = []): LengthAwarePaginator
     {
         $query = Product::forCompany($companyId)
             ->with(['category', 'brand']);
@@ -49,6 +51,8 @@ class ProductService
     public function create(int $companyId, array $data): Product
     {
         return DB::transaction(function () use ($companyId, $data): Product {
+            $data = $this->resolveTaxRate($data, $companyId);
+
             return Product::create(array_merge($data, [
                 'company_id' => $companyId,
             ]));
@@ -60,11 +64,13 @@ class ProductService
      */
     public function update(Product $product, array $data): Product
     {
+        $data = $this->resolveTaxRate($data, $product->company_id ?? null);
+
         DB::transaction(function () use ($product, $data): void {
             $product->update($data);
         });
 
-        return $product->fresh(['category', 'brand']);
+        return $product->fresh(['category', 'brand', 'tax']);
     }
 
     /**
@@ -88,7 +94,7 @@ class ProductService
     /**
      * Obtiene categorías activas para selects.
      */
-    public function getCategories(int $companyId): Collection
+    public function getCategories(?int $companyId): Collection
     {
         return $this->categoryRepository->getActive($companyId);
     }
@@ -96,9 +102,36 @@ class ProductService
     /**
      * Obtiene marcas activas para selects.
      */
-    public function getBrands(int $companyId): Collection
+    public function getBrands(?int $companyId): Collection
     {
         return $this->brandRepository->getActive($companyId);
+    }
+
+    /**
+     * Obtiene impuestos activos para selects.
+     */
+    public function getTaxes(?int $companyId): Collection
+    {
+        return $this->taxRepository->getActive($companyId);
+    }
+
+    /**
+     * Si el producto referencia un impuesto del catálogo, sincroniza el
+     * snapshot numérico `tax_rate` a partir de la tarifa del impuesto.
+     */
+    private function resolveTaxRate(array $data, ?int $companyId): array
+    {
+        if (empty($data['tax_id'])) {
+            return $data;
+        }
+
+        $tax = $this->taxRepository->find((int) $data['tax_id'], $companyId);
+
+        if ($tax !== null) {
+            $data['tax_rate'] = (float) $tax->rate;
+        }
+
+        return $data;
     }
 
     /**

@@ -56,6 +56,9 @@
                     <div>
                         <span class="brutal-label text-[10px] text-muted">Impuesto</span>
                         <p class="font-mono text-lg font-bold">{{ $product->tax_rate }}%</p>
+                        @if($product->tax)
+                            <p class="text-[10px] uppercase text-muted">{{ $product->tax->name }}</p>
+                        @endif
                     </div>
                     <div>
                         <span class="brutal-label text-[10px] text-muted">Stock Mínimo</span>

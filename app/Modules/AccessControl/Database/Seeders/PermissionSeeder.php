@@ -71,6 +71,52 @@ class PermissionSeeder extends Seeder
             ],
 
             // ========================================
+            // PERMISOS: ORGANIZACIÓN (Compañías y Sucursales)
+            // ========================================
+            // Compañías: administración global (super_admin)
+            [
+                'name' => 'empresas.view',
+                'module' => 'organizacion',
+                'description' => 'Listar y ver compañías.',
+            ],
+            [
+                'name' => 'empresas.create',
+                'module' => 'organizacion',
+                'description' => 'Crear compañías.',
+            ],
+            [
+                'name' => 'empresas.edit',
+                'module' => 'organizacion',
+                'description' => 'Editar compañías.',
+            ],
+            [
+                'name' => 'empresas.delete',
+                'module' => 'organizacion',
+                'description' => 'Eliminar compañías.',
+            ],
+            // Sucursales: administración dentro de la compañía
+            [
+                'name' => 'sucursales.view',
+                'module' => 'organizacion',
+                'description' => 'Listar y ver sucursales.',
+            ],
+            [
+                'name' => 'sucursales.create',
+                'module' => 'organizacion',
+                'description' => 'Crear sucursales.',
+            ],
+            [
+                'name' => 'sucursales.edit',
+                'module' => 'organizacion',
+                'description' => 'Editar sucursales.',
+            ],
+            [
+                'name' => 'sucursales.delete',
+                'module' => 'organizacion',
+                'description' => 'Eliminar sucursales.',
+            ],
+
+            // ========================================
             // PERMISOS: USUARIOS Y CONTROL DE ACCESO
             // ========================================
             // Administración de usuarios y roles
@@ -103,6 +149,16 @@ class PermissionSeeder extends Seeder
                 'name' => 'roles.revoke',
                 'module' => 'usuarios',
                 'description' => 'Revocar roles de usuarios.',
+            ],
+            [
+                'name' => 'roles.view',
+                'module' => 'usuarios',
+                'description' => 'Ver roles y sus permisos.',
+            ],
+            [
+                'name' => 'roles.edit',
+                'module' => 'usuarios',
+                'description' => 'Editar los permisos asignados a un rol.',
             ],
 
             // ========================================
@@ -261,9 +317,18 @@ class PermissionSeeder extends Seeder
             ],
 
             // ========================================
+            // PERMISOS: AUTOMATIZACIÓN DE PROCESOS
+            // ========================================
+            // Tareas de mantenimiento y rutinas operativas bajo demanda.
+            [
+                'name' => 'automatizacion.view',
+                'module' => 'automatizacion',
+                'description' => 'Acceder al panel de procesos automatizados y ejecutarlos.',
+            ],
+
+            // ========================================
             // PERMISOS: PUNTO DE VENTA (POS)
             // ========================================
-            // Operación del registro de caja
             [
                 'name' => 'pos.vender',
                 'module' => 'pos',
@@ -328,7 +393,9 @@ class PermissionSeeder extends Seeder
             $adminPermissions = [
                 // Usuarios dentro de la compañía
                 'users.view', 'users.create', 'users.edit', 'users.delete',
-                'roles.assign', 'roles.revoke',
+                'roles.assign', 'roles.revoke', 'roles.view',
+                // Organización (sucursales de su compañía)
+                'sucursales.view', 'sucursales.create', 'sucursales.edit', 'sucursales.delete',
                 // Productos
                 'productos.view', 'productos.create', 'productos.edit', 'productos.delete',
                 'categorias.manage', 'marcas.manage', 'impuestos.manage',
@@ -343,6 +410,8 @@ class PermissionSeeder extends Seeder
                 'facturacion.nota_credito', 'facturacion.resincronizar',
                 // Reportes
                 'reportes.ventas', 'reportes.inventario', 'reportes.financiero', 'reportes.exportar',
+                // Automatización de procesos
+                'automatizacion.view',
                 // POS
                 'pos.vender', 'pos.cobrar', 'pos.devoluciones', 'pos.cierre_caja',
             ];

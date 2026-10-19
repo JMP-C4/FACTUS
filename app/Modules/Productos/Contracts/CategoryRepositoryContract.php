@@ -10,7 +10,7 @@ interface CategoryRepositoryContract
     /**
      * Obtiene categorías activas de una compañía.
      */
-    public function getActive(int $companyId): Collection;
+    public function getActive(?int $companyId): Collection;
 
     /**
      * Obtiene una categoría por ID y compañía.

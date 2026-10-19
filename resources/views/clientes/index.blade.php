@@ -74,10 +74,20 @@
                             <td class="text-right">
                                 <div class="flex items-center justify-end gap-2">
                                     <a
-                                        href="{{ route('clientes.edit', $customer) }}"
-                                        class="brutal-button !px-3 !py-1.5 !text-[10px]"
+                                        href="{{ route('clientes.show', $customer) }}"
+                                        class="brutal-button !px-2.5 !py-1.5"
+                                        title="Ver"
+                                        aria-label="Ver {{ $customer->display_name }}"
                                     >
-                                        Editar
+                                        <x-action-icon name="view" />
+                                    </a>
+                                    <a
+                                        href="{{ route('clientes.edit', $customer) }}"
+                                        class="brutal-button !px-2.5 !py-1.5"
+                                        title="Editar"
+                                        aria-label="Editar {{ $customer->display_name }}"
+                                    >
+                                        <x-action-icon name="edit" />
                                     </a>
                                 </div>
                             </td>
