@@ -31,9 +31,16 @@ class DatabaseSeeder extends Seeder
         $this->call(DemoSeeder::class);
 
         // Paso 4: Usuario de prueba (no duplica si ya existe)
-        User::firstOrCreate(
+        $testUser = User::firstOrCreate(
             ['email' => 'test@example.com'],
             ['name' => 'Test User', 'password' => 'password']
         );
+
+        // El dashboard exige el middleware 'verified'; se marca como verificado
+        // porque no tiene flujo de verificación por email.
+        if (is_null($testUser->email_verified_at)) {
+            $testUser->email_verified_at = now();
+            $testUser->save();
+        }
     }
 }

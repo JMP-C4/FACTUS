@@ -1,59 +1,165 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
-
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+  <img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="320" alt="Laravel">
 </p>
 
-## About Laravel
+# FACTUS
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Plataforma de facturación electrónica multiempresa construida con **Laravel 13** sobre **PostgreSQL 16**, organizada como un **monolito modular**. Gestiona varias compañías, sucursales, usuarios con roles y permisos, catálogo de productos, clientes, inventario, facturación (facturas y notas crédito), reportes, auditoría, automatizaciones y un diagrama entidad-relación del propio esquema.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **PHP:** ^8.3 (desarrollado sobre 8.4.1)
+- **Laravel:** ^13.7
+- **Base de datos:** PostgreSQL 16 (`pgsql`); los tests corren en SQLite en memoria
+- **Frontend:** Blade + Alpine.js 3 + Tailwind CSS 3 + Vite 8
+- **Facturación:** motor local en PostgreSQL (desacoplado de servicios externos)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## Arquitectura
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+El proyecto es un **monolito modular**: cada dominio vive en `app/Modules/<Modulo>` con sus propios `Providers`, `Routes`, `Http` (controllers/requests), `Models`, `Services` y `Database` (migraciones/seeders). La comunicación entre módulos se hace a través de **contratos** (interfaces) para mantener aislamiento.
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+| Módulo | Responsabilidad |
+| --- | --- |
+| `Organizacion` | Compañías y sucursales (multi-tenant) |
+| `Usuarios` | Gestión de usuarios |
+| `AccessControl` | Roles, permisos y asignaciones |
+| `Productos` | Productos, marcas, categorías, impuestos |
+| `Clientes` | Clientes |
+| `Inventario` | Almacenes, existencias (stock) y movimientos |
+| `Facturacion` | Facturas, notas crédito, POS, numeración (DIAN), códigos de barras/QR |
+| `Reportes` | Reportes de ventas e inventario (con exportación CSV) |
+| `Auditoria` | Registro de actividad (activity log) |
+| `Automatizacion` | Procesos automatizados |
+| `DiagramaER` | Diagrama entidad-relación generado desde el esquema real |
+| `Support` | Base compartida: `BaseModuleServiceProvider`, trait `BelongsToCompany` |
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+Los proveedores de cada módulo se registran en `bootstrap/providers.php`. La lógica compartida de multi-tenant (scope por compañía) se apoya en el trait `App\Modules\Support\Models\Concerns\BelongsToCompany` (`scopeForCompany`).
 
-## Agentic Development
+### Multi-tenant
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+Modelos como `Product`, `Brand`, `Category`, `Customer`, `Invoice`, `CreditNote`, `NumberingRange`, `BillingLog` y `Warehouse` usan `BelongsToCompany` para filtrar por `company_id`, garantizando el aislamiento de datos entre compañías.
+
+### Roles
+
+Definidos en `AccessControl` con alcance diferenciado:
+
+- `super_admin` (global) — administra la plataforma, compañías y usuarios.
+- `admin` (company) — catálogos, clientes, inventario, facturación y reportes de una empresa.
+- `supervisor` (company) — aprueba ajustes y supervisa operaciones sensibles.
+- `cashier` (branch) — opera el POS y ejecuta ventas en una sucursal.
+
+---
+
+## Requisitos
+
+- PHP 8.3+ con extensiones habituales (`pdo_pgsql`, `mbstring`, `openssl`, `intl`)
+- Composer 2
+- Node.js 20+ y npm
+- PostgreSQL 16
+
+---
+
+## Instalación
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+# 1. Dependencias y arranque inicial (composer script)
+composer setup
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+El script `setup` ejecuta: `composer install`, copia `.env.example` a `.env`, genera la API key, corre `php artisan migrate --force`, instala dependencias npm y compila los assets.
 
-## Contributing
+Ajusta la conexión a base de datos en `.env`:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```dotenv
+APP_NAME=FACTUS
+DB_CONNECTION=pgsql
+DB_HOST=127.0.0.1
+DB_PORT=5432
+DB_DATABASE=factus
+```
 
-## Code of Conduct
+### Datos de demo (opcional)
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+php artisan db:seed --class=DemoSeeder
+```
 
-## Security Vulnerabilities
+---
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Desarrollo
 
-## License
+```bash
+composer dev
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-# FACTUS
+Levanta en paralelo: servidor HTTP (`php artisan serve`), worker de colas (`queue:listen`), logs (`pail`) y Vite (`npm run dev`).
+
+Comandos individuales:
+
+```bash
+php artisan serve      # servidor de desarrollo
+npm run dev            # Vite en modo watch
+npm run build          # compilar assets para producción
+php artisan queue:listen
+```
+
+---
+
+## Rutas principales
+
+- `/` — página de inicio
+- `/dashboard` — panel (bento grid con KPIs, módulos y actividad reciente)
+- `/profile` — perfil del usuario autenticado
+- `/admin/diagrama-er` — diagrama entidad-relación del esquema (`schema`, `table/{table}/data`, `table/{table}/details`)
+- Rutas de cada módulo en `app/Modules/<Modulo>/Routes/web.php` (organización, productos, clientes, inventario, facturación, reportes, auditoría, automatización, usuarios, control de acceso)
+
+---
+
+## Testing y calidad
+
+Los tests usan PHPUnit sobre SQLite en memoria (`phpunit.xml`).
+
+```bash
+php artisan test                 # suite completa
+php artisan test --filter=ReportTest
+php artisan test --filter=DiagramaER
+vendor/bin/pint                  # estilo de código (Laravel Pint)
+```
+
+Estructura de tests en `tests/Feature/{AccessControl,Auditoria,Automatizacion,DiagramaER,Facturacion,Inventario,Organizacion,Productos,Reportes,Ui,Usuarios}`. Hay además pruebas de carga en `tests/performance/` (script `load-test.cjs`).
+
+---
+
+## Configuración de facturación
+
+El catálogo de facturación está centralizado en `config/billing.php`: métodos de pago, códigos de documento DIAN (factura `01`, nota crédito `91`), unidad de medida por defecto (`94`), tolerancia de pago y roles autorizados para anulaciones en POS. Evita hardcodear estos valores en servicios y requests.
+
+---
+
+## Estructura del proyecto
+
+```
+app/
+  Http/                 Controladores y middleware globales
+  Models/               Modelos compartidos (User, Company, ...)
+  Modules/              Dominios en monolito modular
+    <Modulo>/
+      Providers/        Service provider del módulo
+      Routes/           Rutas web del módulo
+      Http/             Controllers y Requests
+      Models/           Modelos Eloquent
+      Services/         Lógica de dominio
+      Database/         Migraciones y seeders
+  Services/             Servicios de aplicación (p. ej. DashboardService)
+config/                 Configuración (incl. billing.php)
+database/               Migraciones y seeders base
+resources/views/        Plantillas Blade (layout, dashboard, módulos)
+routes/                 Rutas base (web, auth, console)
+tests/                  Pruebas funcionales, de UI y de rendimiento
+```
+
+---
+
+## Licencia
+
+Software propietario. Todos los derechos reservados.

@@ -95,6 +95,8 @@ class DemoSeeder extends Seeder
             ],
         );
 
+        $this->markVerified($admin);
+
         if ($adminRole && ! $admin->hasRole('admin')) {
             $admin->userRoles()->create([
                 'role_id' => $adminRole->id,
@@ -116,6 +118,8 @@ class DemoSeeder extends Seeder
             ],
         );
 
+        $this->markVerified($cashier);
+
         if ($cashierRole && ! $cashier->hasRole('cashier')) {
             $cashier->userRoles()->create([
                 'role_id' => $cashierRole->id,
@@ -123,6 +127,22 @@ class DemoSeeder extends Seeder
                 'branch_id' => $branch->id,
                 'assigned_by' => null,
             ]);
+        }
+    }
+
+    /**
+     * Marca al usuario como verificado.
+     *
+     * El dashboard exige el middleware 'verified'. Los usuarios de demo se
+     * crean sin flujo de verificación por email, así que se marcan como
+     * verificados para permitir el acceso inmediato. `email_verified_at` no
+     * está en los campos asignables masivamente, por eso se asigna directamente.
+     */
+    private function markVerified(User $user): void
+    {
+        if (is_null($user->email_verified_at)) {
+            $user->email_verified_at = now();
+            $user->save();
         }
     }
 

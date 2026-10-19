@@ -84,6 +84,12 @@ class CreateSuperAdminCommand extends Command
                 'password' => bcrypt($password),
             ]);
 
+            // El dashboard exige el middleware 'verified'. El super_admin se
+            // crea por bootstrap y no tiene flujo de verificación por email, así
+            // que se marca como verificado para permitir el acceso inmediato.
+            $user->email_verified_at = now();
+            $user->save();
+
             $this->line('<info>✅ Usuario creado exitosamente</info>');
         } catch (\Exception $e) {
             $this->error('❌ Error al crear el usuario: '.$e->getMessage());
